@@ -3,45 +3,48 @@ package com.logic.report_central.entities;
 import com.logic.report_central.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+
+@Table(name = "doctors")
+@Entity
 
 @Getter
 @Setter
-@NoArgsConstructor
-@Table(name = "users")
-@Entity
-public class User {
+public class Doctor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true)
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
     @UuidGenerator
-    @Column(name = "uuid", unique = true, updatable = false)
     private UUID uuid;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "CHAR(1)")
+    @Column(name="status", columnDefinition = "CHAR(1)")
     private StatusEnum status;
-
-    @Column(columnDefinition = "VARCHAR(50)")
-    private String email;
-    private String password;
-
-    @Column(columnDefinition = "VARCHAR(50)")
-    private String username;
 
     @Column(name="created_at",  updatable = false)
     private Date createdAt;
 
     @Column(name="updated_at")
     private Date updatedAt;
+
+    @OneToMany(mappedBy = "doctorRequest",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Report> reportsRequest;
+
+    @OneToMany(mappedBy = "doctorExecute",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Report> reportsExecute;
+
+
 
     @PrePersist
     private void onCreate() {
@@ -51,8 +54,10 @@ public class User {
         this.status = StatusEnum.A;
     }
 
+
     @PreUpdate
     private void onUpdate() {
         this.updatedAt = new Date();
     }
+
 }

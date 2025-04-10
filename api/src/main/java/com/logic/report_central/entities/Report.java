@@ -1,41 +1,52 @@
 package com.logic.report_central.entities;
 
+import com.logic.report_central.enums.Gender;
 import com.logic.report_central.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.Date;
 import java.util.UUID;
 
+@Table(name = "reports")
+@Entity
+
 @Getter
 @Setter
-@NoArgsConstructor
-@Table(name = "users")
-@Entity
-public class User {
+public class Report {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true)
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
     @UuidGenerator
-    @Column(name = "uuid", unique = true, updatable = false)
     private UUID uuid;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "CHAR(1)")
+    @Column(name="status", columnDefinition = "CHAR(1)")
     private StatusEnum status;
 
-    @Column(columnDefinition = "VARCHAR(50)")
-    private String email;
-    private String password;
+    @Column(name="pacient_name", columnDefinition = "VARCHAR(50)")
+    private String pacientName;
 
-    @Column(columnDefinition = "VARCHAR(50)")
-    private String username;
+    @Column(name="pacient_gender", columnDefinition = "CHAR(1)")
+    private Gender pacientGender;
+
+    @Column(name="pacient_birth_date")
+    private Date pacientBirthDate;
+
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
+    @ManyToOne
+    @JoinColumn(name = "id_doctor_request")
+    private Doctor doctorRequest;
+
+    @ManyToOne
+    @JoinColumn(name = "id_doctor_execute")
+    private Doctor doctorExecute;
 
     @Column(name="created_at",  updatable = false)
     private Date createdAt;

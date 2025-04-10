@@ -3,27 +3,23 @@ package com.logic.report_central.entities;
 import com.logic.report_central.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.Date;
 import java.util.UUID;
 
+@Table(name = "templates")
+@Entity
+
 @Getter
 @Setter
-@NoArgsConstructor
-@Table(name = "users")
-@Entity
-public class User {
-
+public class Template {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true)
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
     @UuidGenerator
-    @Column(name = "uuid", unique = true, updatable = false)
     private UUID uuid;
 
     @Enumerated(EnumType.STRING)
@@ -31,28 +27,26 @@ public class User {
     private StatusEnum status;
 
     @Column(columnDefinition = "VARCHAR(50)")
-    private String email;
-    private String password;
+    private String description;
 
-    @Column(columnDefinition = "VARCHAR(50)")
-    private String username;
+    @Column(columnDefinition = "TEXT")
+    private String content;
 
     @Column(name="created_at",  updatable = false)
-    private Date createdAt;
+    Date createdAt;
 
     @Column(name="updated_at")
-    private Date updatedAt;
+    Date updatedAt;
 
     @PrePersist
-    private void onCreate() {
+    private void setCreatedAt() {
         this.createdAt = new Date();
-        this.updatedAt = new Date();
-
-        this.status = StatusEnum.A;
     }
 
     @PreUpdate
-    private void onUpdate() {
+    private void setUpdatedAt() {
         this.updatedAt = new Date();
     }
+
+
 }
