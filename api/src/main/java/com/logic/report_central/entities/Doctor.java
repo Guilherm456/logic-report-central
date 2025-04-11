@@ -25,13 +25,13 @@ public class Doctor {
     private UUID uuid;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="status", columnDefinition = "CHAR(1)")
+    @Column(name = "status", columnDefinition = "CHAR(1)")
     private StatusEnum status;
 
-    @Column(name="created_at",  updatable = false)
+    @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
-    @Column(name="updated_at")
+    @Column(name = "updated_at")
     private Date updatedAt;
 
     @OneToMany(mappedBy = "doctorRequest",
@@ -44,6 +44,10 @@ public class Doctor {
             orphanRemoval = true)
     private List<Report> reportsExecute;
 
+    @OneToMany(mappedBy = "doctor",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<DoctorBoard> doctorBoards;
 
 
     @PrePersist

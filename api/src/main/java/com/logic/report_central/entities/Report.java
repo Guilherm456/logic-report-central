@@ -25,16 +25,16 @@ public class Report {
     private UUID uuid;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="status", columnDefinition = "CHAR(1)")
+    @Column(name = "status", columnDefinition = "CHAR(1)")
     private StatusEnum status;
 
-    @Column(name="pacient_name", columnDefinition = "VARCHAR(50)")
+    @Column(name = "pacient_name", length = 50)
     private String pacientName;
 
-    @Column(name="pacient_gender", columnDefinition = "CHAR(1)")
+    @Column(name = "pacient_gender", columnDefinition = "CHAR(1)")
     private Gender pacientGender;
 
-    @Column(name="pacient_birth_date")
+    @Column(name = "pacient_birth_date")
     private Date pacientBirthDate;
 
     @Column(columnDefinition = "TEXT")
@@ -48,10 +48,10 @@ public class Report {
     @JoinColumn(name = "id_doctor_execute")
     private Doctor doctorExecute;
 
-    @Column(name="created_at",  updatable = false)
+    @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
-    @Column(name="updated_at")
+    @Column(name = "updated_at")
     private Date updatedAt;
 
     @PrePersist

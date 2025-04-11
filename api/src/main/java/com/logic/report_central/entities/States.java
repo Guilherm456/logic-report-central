@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Table(name = "states")
 @Entity
 
@@ -22,4 +24,13 @@ public class States {
 
     @Column(columnDefinition = "VARCHAR(2)")
     private String uf;
+
+    @OneToMany
+    @JoinColumn(name = "state_id")
+    private List<DoctorBoard> doctorBoards;
+
+    public States(String name, String uf) {
+        this.name = name;
+        this.uf = uf;
+    }
 }

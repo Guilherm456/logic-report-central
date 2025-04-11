@@ -4,7 +4,7 @@ import com.logic.report_central.configs.utils.JwtUtil;
 import com.logic.report_central.dtos.AuthDTO;
 import com.logic.report_central.entities.Auth;
 import com.logic.report_central.entities.User;
-import com.logic.report_central.repositories.UserRepository;
+import com.logic.report_central.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UsersRepository userRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
