@@ -1,7 +1,7 @@
 package com.logic.report_central.controllers;
 
 import com.logic.report_central.annotations.PublicEndpoint;
-import com.logic.report_central.dtos.AuthDTO;
+import com.logic.report_central.dtos.Auth.AuthDTO;
 import com.logic.report_central.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package com.logic.report_central.controllers;
 
-import com.logic.report_central.dtos.PaginationDTO;
+import com.logic.report_central.dtos.shared.PaginationDTO;
 import com.logic.report_central.dtos.UserDTO;
 import com.logic.report_central.entities.User;
 import com.logic.report_central.services.UserService;
@@ -24,14 +24,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-    @PutMapping("/{uuid}")
-    public ResponseEntity<User> updateUser(@PathVariable String uuid, @Valid @RequestBody UserDTO userDTO) {
-        return ResponseEntity.ok(userService.updateUser(uuid, userDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(userService.updateUser(id, userDTO));
     }
 
-    @GetMapping("/{uuid}")
-    public ResponseEntity<User> getUserByUuid(@PathVariable String uuid) {
-        return ResponseEntity.ok(userService.findByUuid(uuid));
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserByUuid(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.findById(id));
     }
 
     @GetMapping()
@@ -44,9 +44,9 @@ public class UserController {
         return ResponseEntity.ok(PaginationDTO.fromPage(userPage));
     }
 
-    @DeleteMapping("/{uuid}")
-    public ResponseEntity<User> deleteUser(@PathVariable String uuid) {
-        return ResponseEntity.ok(userService.deleteUser(uuid));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<User> deleteUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.deleteUser(id));
     }
 
 }

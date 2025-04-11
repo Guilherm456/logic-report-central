@@ -1,5 +1,6 @@
 package com.logic.report_central.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,15 +20,16 @@ public class States {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(50)")
+    @Column(length = 50, nullable = false)
     private String name;
 
-    @Column(columnDefinition = "VARCHAR(2)")
+    @Column(length=2, nullable = false)
     private String uf;
 
     @OneToMany
     @JoinColumn(name = "state_id")
-    private List<DoctorBoard> doctorBoards;
+    @JsonIgnore
+    private List<Doctor> doctors;
 
     public States(String name, String uf) {
         this.name = name;

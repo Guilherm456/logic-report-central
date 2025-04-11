@@ -1,14 +1,15 @@
 package com.logic.report_central.entities;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.logic.report_central.enums.Gender;
 import com.logic.report_central.enums.StatusEnum;
+import com.logic.report_central.serializers.StatusEnumSerializer;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.Date;
-import java.util.UUID;
 
 @Table(name = "reports")
 @Entity
@@ -21,23 +22,22 @@ public class Report {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
-    @UuidGenerator
-    private UUID uuid;
-
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "CHAR(1)")
+    @Column(columnDefinition = "CHAR(1)")
+    @JsonSerialize(using = StatusEnumSerializer.class)
+    @JsonAlias("active")
     private StatusEnum status;
 
-    @Column(name = "pacient_name", length = 50)
+    @Column(name = "pacient_name", length = 50, nullable = false)
     private String pacientName;
 
-    @Column(name = "pacient_gender", columnDefinition = "CHAR(1)")
+    @Column(name = "pacient_gender", columnDefinition = "CHAR(1)", nullable = false)
     private Gender pacientGender;
 
-    @Column(name = "pacient_birth_date")
+    @Column(name = "pacient_birth_date", nullable = false)
     private Date pacientBirthDate;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @ManyToOne

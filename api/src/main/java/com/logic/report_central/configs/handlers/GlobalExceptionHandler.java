@@ -1,6 +1,6 @@
 package com.logic.report_central.configs.handlers;
 
-import com.logic.report_central.dtos.ErrorDTO;
+import com.logic.report_central.dtos.shared.ErrorDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDTO> handleResponseStatusException(ResponseStatusException ex) {
         return ResponseEntity.status(ex.getStatusCode())
                 .body(new ErrorDTO(ex.getReason(), String.valueOf(ex.getStatusCode().value())));
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorDTO> handleNoHandlerFoundException(NoHandlerFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorDTO("Rota não encontrada", "404"));
     }
 
     @ExceptionHandler(Exception.class)

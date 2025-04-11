@@ -49,9 +49,6 @@ public class StatesInitializer implements CommandLineRunner {
             );
 
             statesRepository.saveAll(initialStates);
-            System.out.println("Estados iniciados no banco de dados.");
-        } else {
-            System.out.println("Estados já existem no banco de dados.");
         }
     }
 }

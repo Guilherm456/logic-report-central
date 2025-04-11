@@ -1,4 +1,4 @@
-package com.logic.report_central.dtos;
+package com.logic.report_central.dtos.shared;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

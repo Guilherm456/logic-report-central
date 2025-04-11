@@ -1,32 +1,58 @@
 package com.logic.report_central.entities;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.logic.report_central.enums.DoctorTypeEnum;
 import com.logic.report_central.enums.StatusEnum;
+import com.logic.report_central.serializers.StatusEnumSerializer;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Table(name = "doctors")
 @Entity
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Doctor {
 
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
-    @UuidGenerator
-    private UUID uuid;
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "CHAR(1)")
+    @JsonSerialize(using = StatusEnumSerializer.class)
+    @JsonAlias("active")
+    private StatusEnum status;
+
+    @Column(length = 50, nullable = false)
+    private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "CHAR(1)")
-    private StatusEnum status;
+    @Column( columnDefinition = "CHAR(1)", nullable = false)
+    private DoctorTypeEnum type;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name="council_id", referencedColumnName = "id")
+    private Council council;
+
+    @Column(name = "council_number", nullable = false, length = 20)
+    private String councilNumber;
+
+    @ManyToOne
+    @JoinColumn(name = "state_id", nullable = false)
+    private States state;
 
     @Column(name = "created_at", updatable = false)
     private Date createdAt;
@@ -37,17 +63,28 @@ public class Doctor {
     @OneToMany(mappedBy = "doctorRequest",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @JsonIgnore
     private List<Report> reportsRequest;
 
     @OneToMany(mappedBy = "doctorExecute",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @JsonIgnore
     private List<Report> reportsExecute;
 
-    @OneToMany(mappedBy = "doctor",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    private List<DoctorBoard> doctorBoards;
+    @OneToMany
+    @JoinColumn(name = "doctor_id")
+    @JsonIgnore
+    private List<Template> templates;
+
+    public Doctor(String name, DoctorTypeEnum type, User user, Council council, String councilNumber, States state) {
+        this.name = name;
+        this.type = type;
+        this.user = user;
+        this.council = council;
+        this.councilNumber = councilNumber;
+        this.state = state;
+    }
 
 
     @PrePersist
