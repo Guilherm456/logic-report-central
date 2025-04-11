@@ -3,6 +3,7 @@ package com.logic.report_central.dtos;
 import com.logic.report_central.annotations.ValidEnum;
 import com.logic.report_central.enums.DoctorTypeEnum;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -21,16 +22,13 @@ public class DoctorDTO {
     @Size(min = 5, max = 12, message = "O número do conselho deve ter entre 5 e 12 dígitos")
     private String council_number;
 
-    @NotBlank
-    private Long council_id;
-
-    @NotBlank
-    private Long state_id;
-
-    @NotBlank
-    private Long user_id;
-
-    @NotBlank
+    @NotNull
     @ValidEnum(enumClass = DoctorTypeEnum.class, message = "Tipo de médico inválido")
     DoctorTypeEnum doctor_type;
+    @NotNull
+    private Long council_id;
+    @NotNull
+    private Long state_id;
+    @NotNull
+    private Long user_id;
 }

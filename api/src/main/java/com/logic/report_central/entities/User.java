@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -45,9 +46,9 @@ public class User {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
-    private Doctor doctor;
+    private List<Doctor> doctors;
 
     @PrePersist
     private void onCreate() {

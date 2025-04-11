@@ -93,6 +93,9 @@ public class UserService {
         if ( user.getStatus().equals(StatusEnum.D))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
 
+        if (user.getDoctors() != null && !user.getDoctors().isEmpty() && user.getDoctors().getFirst().getStatus() != StatusEnum.D)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário não pode ser deletado, pois está associado a um médico");
+
         try {
             user.setStatus(StatusEnum.D);
             userRepository.save(user);

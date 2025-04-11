@@ -39,7 +39,7 @@ public class Doctor {
     @Column( columnDefinition = "CHAR(1)", nullable = false)
     private DoctorTypeEnum type;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

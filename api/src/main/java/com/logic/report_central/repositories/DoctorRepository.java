@@ -1,6 +1,7 @@
 package com.logic.report_central.repositories;
 
 import com.logic.report_central.entities.Doctor;
+import com.logic.report_central.enums.StatusEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,9 +17,11 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
     boolean existsByUserId(Long userId);
 
-    boolean existsByCouncilIdAndCouncilNumberAndStateId(Long councilId, String councilNumber, Long stateId);
+    Optional<Doctor> findByUserId(Long userId);
 
-    Optional<Doctor> findByCouncilIdAndCouncilNumberAndStateId(Long councilId, String councilNumber, Long stateId);
+    boolean existsByCouncilIdAndCouncilNumberAndStateIdAndStatusNot(Long councilId, String councilNumber, Long stateId, StatusEnum status);
+
+    Optional<Doctor> findByCouncilIdAndCouncilNumberAndStateIdAndStatusNot(Long councilId, String councilNumber, Long stateId, StatusEnum status);
 
 
     @Query("SELECT d FROM Doctor d WHERE d.name LIKE %:searchTerm% OR d.councilNumber LIKE %:searchTerm% AND d.status <> 'D'")

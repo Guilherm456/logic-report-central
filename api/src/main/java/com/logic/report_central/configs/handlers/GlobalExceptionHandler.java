@@ -3,6 +3,7 @@ package com.logic.report_central.configs.handlers;
 import com.logic.report_central.dtos.shared.ErrorDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,12 +30,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
+    @ExceptionHandler(ResponseStatusException.class)
     @ResponseBody
     public ResponseEntity<ErrorDTO> handleResponseStatusException(ResponseStatusException ex) {
         return ResponseEntity.status(ex.getStatusCode())
                 .body(new ErrorDTO(ex.getReason(), String.valueOf(ex.getStatusCode().value())));
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity<ErrorDTO> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorDTO("Valide o dado enviado se está no formato esperado", String.valueOf(HttpStatus.BAD_REQUEST.value())));
+    }
+
 
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseBody
