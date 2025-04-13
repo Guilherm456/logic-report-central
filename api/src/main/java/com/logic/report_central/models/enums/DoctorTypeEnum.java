@@ -1,4 +1,4 @@
-package com.logic.report_central.enums;
+package com.logic.report_central.models.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

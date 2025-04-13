@@ -2,8 +2,8 @@ package com.logic.report_central.controllers;
 
 import com.logic.report_central.dtos.DoctorDTO;
 import com.logic.report_central.dtos.shared.PaginationDTO;
-import com.logic.report_central.entities.Doctor;
-import com.logic.report_central.enums.DoctorTypeEnum;
+import com.logic.report_central.models.entities.Doctor;
+import com.logic.report_central.models.enums.DoctorTypeEnum;
 import com.logic.report_central.services.DoctorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

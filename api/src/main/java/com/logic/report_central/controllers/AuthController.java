@@ -1,6 +1,5 @@
 package com.logic.report_central.controllers;
 
-import com.logic.report_central.annotations.PublicEndpoint;
 import com.logic.report_central.dtos.Auth.AuthDTO;
 import com.logic.report_central.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-@PublicEndpoint
 public class AuthController {
 
     @Autowired

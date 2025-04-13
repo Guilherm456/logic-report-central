@@ -1,7 +1,7 @@
 package com.logic.report_central.services;
 
-import com.logic.report_central.entities.Council;
-import com.logic.report_central.entities.States;
+import com.logic.report_central.models.entities.Council;
+import com.logic.report_central.models.entities.States;
 import com.logic.report_central.repositories.CouncilRepository;
 import com.logic.report_central.repositories.StateRepository;
 import lombok.Getter;
@@ -29,9 +29,9 @@ public class CouncilService {
     private StateRepository stateRepository;
 
     public List<States> getStates() {
-        try{
+        try {
             return stateRepository.findAll();
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao buscar estados");
         }
     }
@@ -48,7 +48,6 @@ public class CouncilService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao buscar conselhos");
         }
     }
-
 
 
 }

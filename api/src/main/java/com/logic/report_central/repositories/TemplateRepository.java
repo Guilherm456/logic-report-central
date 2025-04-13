@@ -1,7 +1,7 @@
 package com.logic.report_central.repositories;
 
-import com.logic.report_central.entities.Template;
-import com.logic.report_central.enums.StatusEnum;
+import com.logic.report_central.models.entities.Template;
+import com.logic.report_central.models.enums.StatusEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

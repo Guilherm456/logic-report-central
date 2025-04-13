@@ -1,8 +1,8 @@
-package com.logic.report_central.repositories.Specifications;
+package com.logic.report_central.repositories.specifications;
 
-import com.logic.report_central.entities.Doctor;
-import com.logic.report_central.entities.User;
-import com.logic.report_central.enums.StatusEnum;
+import com.logic.report_central.models.entities.Doctor;
+import com.logic.report_central.models.entities.User;
+import com.logic.report_central.models.enums.StatusEnum;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;

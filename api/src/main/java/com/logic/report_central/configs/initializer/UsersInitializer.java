@@ -1,6 +1,6 @@
 package com.logic.report_central.configs.initializer;
 
-import com.logic.report_central.entities.User;
+import com.logic.report_central.models.entities.User;
 import com.logic.report_central.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

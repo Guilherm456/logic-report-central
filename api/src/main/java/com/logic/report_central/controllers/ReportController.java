@@ -2,7 +2,7 @@ package com.logic.report_central.controllers;
 
 import com.logic.report_central.dtos.ReportDTO;
 import com.logic.report_central.dtos.shared.PaginationDTO;
-import com.logic.report_central.entities.Report;
+import com.logic.report_central.models.entities.Report;
 import com.logic.report_central.services.ReportService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +37,5 @@ public class ReportController {
     public ResponseEntity<Report> updateReport(@PathVariable Long id, @Valid @RequestBody ReportDTO reportDTO) {
         return ResponseEntity.ok(reportService.updateReport(id, reportDTO));
     }
-
 
 }

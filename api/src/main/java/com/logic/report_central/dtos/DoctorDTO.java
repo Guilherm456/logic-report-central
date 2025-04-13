@@ -1,7 +1,7 @@
 package com.logic.report_central.dtos;
 
-import com.logic.report_central.annotations.ValidEnum;
-import com.logic.report_central.enums.DoctorTypeEnum;
+import com.logic.report_central.models.annotations.ValidEnum;
+import com.logic.report_central.models.enums.DoctorTypeEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

@@ -1,11 +1,11 @@
 package com.logic.report_central.services;
 
 import com.logic.report_central.dtos.ReportDTO;
-import com.logic.report_central.entities.Doctor;
-import com.logic.report_central.entities.Report;
-import com.logic.report_central.entities.User;
-import com.logic.report_central.enums.DoctorTypeEnum;
-import com.logic.report_central.enums.StatusEnum;
+import com.logic.report_central.models.entities.Doctor;
+import com.logic.report_central.models.entities.Report;
+import com.logic.report_central.models.entities.User;
+import com.logic.report_central.models.enums.DoctorTypeEnum;
+import com.logic.report_central.models.enums.StatusEnum;
 import com.logic.report_central.repositories.DoctorRepository;
 import com.logic.report_central.repositories.ReportRepository;
 import com.logic.report_central.repositories.UserRepository;

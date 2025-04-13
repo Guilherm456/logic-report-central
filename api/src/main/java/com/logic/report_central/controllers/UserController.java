@@ -2,7 +2,7 @@ package com.logic.report_central.controllers;
 
 import com.logic.report_central.dtos.UserDTO;
 import com.logic.report_central.dtos.shared.PaginationDTO;
-import com.logic.report_central.entities.User;
+import com.logic.report_central.models.entities.User;
 import com.logic.report_central.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

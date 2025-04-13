@@ -1,10 +1,10 @@
 package com.logic.report_central.services;
 
 import com.logic.report_central.dtos.TemplateDTO;
-import com.logic.report_central.entities.Doctor;
-import com.logic.report_central.entities.Template;
-import com.logic.report_central.entities.User;
-import com.logic.report_central.enums.StatusEnum;
+import com.logic.report_central.models.entities.Doctor;
+import com.logic.report_central.models.entities.Template;
+import com.logic.report_central.models.entities.User;
+import com.logic.report_central.models.enums.StatusEnum;
 import com.logic.report_central.repositories.DoctorRepository;
 import com.logic.report_central.repositories.TemplateRepository;
 import com.logic.report_central.repositories.UserRepository;

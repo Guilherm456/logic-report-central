@@ -1,7 +1,7 @@
 package com.logic.report_central.dtos;
 
-import com.logic.report_central.annotations.ValidEnum;
-import com.logic.report_central.enums.Gender;
+import com.logic.report_central.models.annotations.ValidEnum;
+import com.logic.report_central.models.enums.Gender;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

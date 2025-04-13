@@ -1,8 +1,8 @@
-package com.logic.report_central.repositories.Specifications;
+package com.logic.report_central.repositories.specifications;
 
-import com.logic.report_central.entities.Doctor;
-import com.logic.report_central.enums.DoctorTypeEnum;
-import com.logic.report_central.enums.StatusEnum;
+import com.logic.report_central.models.entities.Doctor;
+import com.logic.report_central.models.enums.DoctorTypeEnum;
+import com.logic.report_central.models.enums.StatusEnum;
 import org.springframework.data.jpa.domain.Specification;
 
 public class DoctorSpecification {

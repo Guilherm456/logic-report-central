@@ -1,6 +1,6 @@
 package com.logic.report_central.repositories;
 
-import com.logic.report_central.entities.Report;
+import com.logic.report_central.models.entities.Report;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

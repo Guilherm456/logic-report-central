@@ -1,8 +1,8 @@
 package com.logic.report_central.controllers;
 
 import com.logic.report_central.dtos.shared.PaginationDTO;
-import com.logic.report_central.entities.Council;
-import com.logic.report_central.entities.States;
+import com.logic.report_central.models.entities.Council;
+import com.logic.report_central.models.entities.States;
 import com.logic.report_central.services.CouncilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

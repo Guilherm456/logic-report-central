@@ -1,10 +1,10 @@
 package com.logic.report_central.services;
 
 import com.logic.report_central.dtos.UserDTO;
-import com.logic.report_central.entities.User;
-import com.logic.report_central.enums.StatusEnum;
-import com.logic.report_central.repositories.Specifications.UserSpecification;
+import com.logic.report_central.models.entities.User;
+import com.logic.report_central.models.enums.StatusEnum;
 import com.logic.report_central.repositories.UserRepository;
+import com.logic.report_central.repositories.specifications.UserSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

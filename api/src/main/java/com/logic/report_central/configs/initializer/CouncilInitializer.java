@@ -1,6 +1,6 @@
 package com.logic.report_central.configs.initializer;
 
-import com.logic.report_central.entities.Council;
+import com.logic.report_central.models.entities.Council;
 import com.logic.report_central.repositories.CouncilRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.util.List;
 public class CouncilInitializer implements CommandLineRunner {
 
     @Autowired
-    private  CouncilRepository councilRepository;
+    private CouncilRepository councilRepository;
 
     @Override
     public void run(String... args) throws Exception {

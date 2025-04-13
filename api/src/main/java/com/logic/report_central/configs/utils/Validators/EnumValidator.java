@@ -1,6 +1,6 @@
 package com.logic.report_central.configs.utils.Validators;
 
-import com.logic.report_central.annotations.ValidEnum;
+import com.logic.report_central.models.annotations.ValidEnum;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

@@ -1,17 +1,17 @@
 package com.logic.report_central.services;
 
 import com.logic.report_central.dtos.DoctorDTO;
-import com.logic.report_central.entities.Council;
-import com.logic.report_central.entities.Doctor;
-import com.logic.report_central.entities.States;
-import com.logic.report_central.entities.User;
-import com.logic.report_central.enums.DoctorTypeEnum;
-import com.logic.report_central.enums.StatusEnum;
+import com.logic.report_central.models.entities.Council;
+import com.logic.report_central.models.entities.Doctor;
+import com.logic.report_central.models.entities.States;
+import com.logic.report_central.models.entities.User;
+import com.logic.report_central.models.enums.DoctorTypeEnum;
+import com.logic.report_central.models.enums.StatusEnum;
 import com.logic.report_central.repositories.CouncilRepository;
 import com.logic.report_central.repositories.DoctorRepository;
-import com.logic.report_central.repositories.Specifications.DoctorSpecification;
 import com.logic.report_central.repositories.StateRepository;
 import com.logic.report_central.repositories.UserRepository;
+import com.logic.report_central.repositories.specifications.DoctorSpecification;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

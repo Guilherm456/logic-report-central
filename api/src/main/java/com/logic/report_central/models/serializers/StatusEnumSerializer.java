@@ -1,9 +1,9 @@
-package com.logic.report_central.serializers;
+package com.logic.report_central.models.serializers;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.logic.report_central.enums.StatusEnum;
+import com.logic.report_central.models.enums.StatusEnum;
 
 import java.io.IOException;
 
