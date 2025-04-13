@@ -1,7 +1,7 @@
 package com.logic.report_central.controllers;
 
-import com.logic.report_central.dtos.shared.PaginationDTO;
 import com.logic.report_central.dtos.UserDTO;
+import com.logic.report_central.dtos.shared.PaginationDTO;
 import com.logic.report_central.entities.User;
 import com.logic.report_central.services.UserService;
 import jakarta.validation.Valid;
@@ -38,8 +38,10 @@ public class UserController {
     public ResponseEntity<PaginationDTO<User>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String search) {
-        Page<User> userPage = userService.findAllUsers(page, size, search);
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Boolean doctor_linked
+    ) {
+        Page<User> userPage = userService.findAllUsers(page, size, search, doctor_linked);
 
         return ResponseEntity.ok(PaginationDTO.fromPage(userPage));
     }

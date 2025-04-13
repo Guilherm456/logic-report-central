@@ -6,8 +6,7 @@ import com.logic.report_central.enums.Gender;
 import com.logic.report_central.enums.StatusEnum;
 import com.logic.report_central.serializers.StatusEnumSerializer;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -16,6 +15,9 @@ import java.util.Date;
 
 @Getter
 @Setter
+
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class Report {
 
     @Id
@@ -28,24 +30,31 @@ public class Report {
     @JsonAlias("active")
     private StatusEnum status;
 
+    @NonNull
     @Column(name = "pacient_name", length = 50, nullable = false)
     private String pacientName;
 
+    @NonNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "pacient_gender", columnDefinition = "CHAR(1)", nullable = false)
     private Gender pacientGender;
 
+    @NonNull
     @Column(name = "pacient_birth_date", nullable = false)
     private Date pacientBirthDate;
 
+    @NonNull
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @ManyToOne
+    @NonNull
+    @ManyToOne()
     @JoinColumn(name = "id_doctor_request")
     private Doctor doctorRequest;
 
+    @NonNull
     @ManyToOne
-    @JoinColumn(name = "id_doctor_execute")
+    @JoinColumn(name = "id_doctor_execute", updatable = false)
     private Doctor doctorExecute;
 
     @Column(name = "created_at", updatable = false)

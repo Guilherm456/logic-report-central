@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.logic.report_central.enums.StatusEnum;
 import com.logic.report_central.serializers.StatusEnumSerializer;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -15,7 +14,14 @@ import java.util.Date;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class Template {
+
+    @Column(name = "created_at", updatable = false)
+    Date createdAt;
+    @Column(name = "updated_at")
+    Date updatedAt;
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
@@ -26,19 +32,17 @@ public class Template {
     @JsonAlias("active")
     private StatusEnum status;
 
+    @NonNull
     @Column(length = 50, nullable = false)
     private String description;
 
+    @NonNull
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(name = "created_at", updatable = false)
-    Date createdAt;
-    @Column(name = "updated_at")
-    Date updatedAt;
-
+    @NonNull
     @ManyToOne
-    @JoinColumn(name = "id_doctor")
+    @JoinColumn(name = "id_doctor", nullable = false)
     private Doctor doctor;
 
     @PrePersist

@@ -3,6 +3,7 @@ package com.logic.report_central.services;
 import com.logic.report_central.dtos.UserDTO;
 import com.logic.report_central.entities.User;
 import com.logic.report_central.enums.StatusEnum;
+import com.logic.report_central.repositories.Specifications.UserSpecification;
 import com.logic.report_central.repositories.UsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,14 +21,11 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class UserService {
 
+    Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private UsersRepository userRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    Logger logger = LoggerFactory.getLogger(UserService.class);
-
 
     public User createUser(UserDTO userDTO) {
         if (userRepository.findByEmail(userDTO.getEmail()) != null)
@@ -49,11 +48,11 @@ public class UserService {
 
     public User updateUser(Long id, UserDTO userDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
-        if ( user.getStatus().equals(StatusEnum.D))
+        if (user.getStatus().equals(StatusEnum.D))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
 
         if (userRepository.findByEmail(userDTO.getEmail()) != null && !user.getEmail().equals(userDTO.getEmail()))
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail já cadastrado");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail já cadastrado");
 
         try {
             user.setEmail(userDTO.getEmail());
@@ -71,26 +70,28 @@ public class UserService {
     }
 
 
-    public Page<User> findAllUsers(int page, int size, String search) {
+    public Page<User> findAllUsers(int page, int size, String search, Boolean doctorLinked) {
         Pageable pageable = PageRequest.of(page, size);
-        if (search != null && !search.isEmpty()) {
-            return userRepository.findByUsernameOrEmailContainingIgnoreCase(search, pageable);
-        } else {
-            return userRepository.findAll(pageable);
-        }
+        Specification<User> spec = Specification.where(null);
+
+        if (search != null && !search.isEmpty()) spec = spec.and(UserSpecification.searchByUsernameOrEmail(search));
+        spec = spec.and(UserSpecification.isDoctorLinked(doctorLinked));
+
+        return userRepository.findAll(spec, pageable);
+
     }
 
 
     public User findById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
-        if ( user.getStatus().equals(StatusEnum.D))
+        if (user.getStatus().equals(StatusEnum.D))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         return user;
     }
 
     public User deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
-        if ( user.getStatus().equals(StatusEnum.D))
+        if (user.getStatus().equals(StatusEnum.D))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
 
         if (user.getDoctors() != null && !user.getDoctors().isEmpty() && user.getDoctors().getFirst().getStatus() != StatusEnum.D)

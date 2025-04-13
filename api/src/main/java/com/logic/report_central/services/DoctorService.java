@@ -5,9 +5,11 @@ import com.logic.report_central.entities.Council;
 import com.logic.report_central.entities.Doctor;
 import com.logic.report_central.entities.States;
 import com.logic.report_central.entities.User;
+import com.logic.report_central.enums.DoctorTypeEnum;
 import com.logic.report_central.enums.StatusEnum;
 import com.logic.report_central.repositories.CouncilRepository;
 import com.logic.report_central.repositories.DoctorRepository;
+import com.logic.report_central.repositories.Specifications.DoctorSpecification;
 import com.logic.report_central.repositories.StateRepository;
 import com.logic.report_central.repositories.UsersRepository;
 import jakarta.transaction.Transactional;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,20 +29,16 @@ import java.util.Optional;
 @Service
 public class DoctorService {
 
-    @Autowired
-    private StateRepository stateRepository;
-
-    @Autowired
-    private DoctorRepository doctorRepository;
-
-    @Autowired
-    private CouncilRepository councilRepository;
-
-    @Autowired
-    private UsersRepository userRepository;
-
     Logger logger = LoggerFactory.getLogger(DoctorService.class);
 
+    @Autowired
+    private StateRepository stateRepository;
+    @Autowired
+    private DoctorRepository doctorRepository;
+    @Autowired
+    private CouncilRepository councilRepository;
+    @Autowired
+    private UsersRepository userRepository;
 
     @Transactional
     public Doctor createDoctor(DoctorDTO doctorDTO) {
@@ -88,12 +87,17 @@ public class DoctorService {
     }
 
 
-    public Page<Doctor> findAllDoctors(int page, int size, String search) {
+    public Page<Doctor> findAllDoctors(int page, int size, String search, DoctorTypeEnum type) {
         Pageable pageable = PageRequest.of(page, size);
-        if (search != null && !search.isEmpty()) {
-            return doctorRepository.findByNameOrCouncilNumberContainingIgnoreCase(search, pageable);
-        }
-        return doctorRepository.findAll(pageable);
+        Specification<Doctor> spec = Specification.where(null);
+
+        if (search != null && !search.isEmpty())
+            spec = spec.and(DoctorSpecification.searchByNameOrCouncilNumber(search));
+
+        if (type != null) spec = spec.and(DoctorSpecification.hasType(type));
+
+
+        return doctorRepository.findAll(spec, pageable);
     }
 
     public Doctor findById(Long id) {
@@ -152,7 +156,8 @@ public class DoctorService {
         if (doctor.getStatus().equals(StatusEnum.D))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico não encontrado");
 
-        if (!doctor.getTemplates().isEmpty())
+        if (!doctor.getTemplates().isEmpty() && doctor.getTemplates().stream()
+                .anyMatch(template -> !template.getStatus().equals(StatusEnum.D)))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Médico não pode ser deletado, pois tem templates associados");
 
         try {

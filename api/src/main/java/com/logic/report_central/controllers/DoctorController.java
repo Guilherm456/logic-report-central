@@ -3,6 +3,7 @@ package com.logic.report_central.controllers;
 import com.logic.report_central.dtos.DoctorDTO;
 import com.logic.report_central.dtos.shared.PaginationDTO;
 import com.logic.report_central.entities.Doctor;
+import com.logic.report_central.enums.DoctorTypeEnum;
 import com.logic.report_central.services.DoctorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,15 @@ public class DoctorController {
     public ResponseEntity<PaginationDTO<Doctor>> getAllDoctors(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String search) {
-        return ResponseEntity.ok(PaginationDTO.fromPage(doctorService.findAllDoctors(page, size, search)));
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) DoctorTypeEnum type
+    ) {
+        return ResponseEntity.ok(PaginationDTO.fromPage(doctorService.findAllDoctors(page, size, search, type)));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Doctor> deleteDoctor(@PathVariable Long id) {
         return ResponseEntity.ok(doctorService.deleteDoctor(id));
     }
-    
+
 }

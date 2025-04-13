@@ -4,12 +4,10 @@ package com.logic.report_central.dtos.Auth;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class AuthDTO {
     @NotBlank
@@ -17,6 +15,6 @@ public class AuthDTO {
     private String email;
 
     @NotBlank
-    @Size(min=6)
+    @Size(min = 6)
     private String password;
 }

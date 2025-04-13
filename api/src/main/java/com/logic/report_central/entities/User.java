@@ -1,19 +1,20 @@
 package com.logic.report_central.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.logic.report_central.enums.StatusEnum;
 import com.logic.report_central.serializers.StatusEnumSerializer;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
 @Entity
@@ -27,17 +28,20 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "CHAR(1)")
     @JsonSerialize(using = StatusEnumSerializer.class)
-
+    @JsonProperty("active")
     private StatusEnum status;
 
+    @NonNull
     @Column(length = 50, unique = true, nullable = false)
     private String email;
 
+    @NonNull
     @JsonIgnore
     @Column(nullable = false, updatable = false)
     private String password;
 
-    @Column(length = 50,nullable = false)
+    @NonNull
+    @Column(length = 50, nullable = false)
     private String username;
 
     @Column(name = "created_at", updatable = false)
@@ -50,23 +54,25 @@ public class User {
     @JsonIgnore
     private List<Doctor> doctors;
 
+    @JsonProperty("doctor_linked")
+    public Optional<Doctor> doctorLinked() {
+        return this.doctors.stream()
+                .filter(doctor -> doctor.getStatus() != StatusEnum.D)
+                .findFirst();
+    }
+
+
     @PrePersist
     private void onCreate() {
         this.createdAt = new Date();
         this.updatedAt = new Date();
 
-        this.status= StatusEnum.A;
+        this.status = StatusEnum.A;
     }
 
     @PreUpdate
     private void onUpdate() {
         this.updatedAt = new Date();
-    }
-
-    public User(String email, String password, String username) {
-        this.email = email;
-        this.password = password;
-        this.username = username;
     }
 
 

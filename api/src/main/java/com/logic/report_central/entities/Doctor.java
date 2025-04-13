@@ -36,15 +36,15 @@ public class Doctor {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column( columnDefinition = "CHAR(1)", nullable = false)
+    @Column(columnDefinition = "CHAR(1)", nullable = false)
     private DoctorTypeEnum type;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne()
+    @JsonIgnore
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="council_id", referencedColumnName = "id")
+    @JoinColumn(name = "council_id", referencedColumnName = "id")
     private Council council;
 
     @Column(name = "council_number", nullable = false, length = 20)
@@ -72,8 +72,7 @@ public class Doctor {
     @JsonIgnore
     private List<Report> reportsExecute;
 
-    @OneToMany
-    @JoinColumn(name = "doctor_id")
+    @OneToMany(mappedBy = "doctor")
     @JsonIgnore
     private List<Template> templates;
 
