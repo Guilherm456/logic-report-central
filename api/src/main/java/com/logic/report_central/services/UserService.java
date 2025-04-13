@@ -4,7 +4,7 @@ import com.logic.report_central.dtos.UserDTO;
 import com.logic.report_central.entities.User;
 import com.logic.report_central.enums.StatusEnum;
 import com.logic.report_central.repositories.Specifications.UserSpecification;
-import com.logic.report_central.repositories.UsersRepository;
+import com.logic.report_central.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class UserService {
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
-    private UsersRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -47,9 +47,9 @@ public class UserService {
     }
 
     public User updateUser(Long id, UserDTO userDTO) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
-        if (user.getStatus().equals(StatusEnum.D))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        User user = userRepository.findByIdAndStatusNot(id, StatusEnum.D)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
 
         if (userRepository.findByEmail(userDTO.getEmail()) != null && !user.getEmail().equals(userDTO.getEmail()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail já cadastrado");
@@ -77,22 +77,19 @@ public class UserService {
         if (search != null && !search.isEmpty()) spec = spec.and(UserSpecification.searchByUsernameOrEmail(search));
         spec = spec.and(UserSpecification.isDoctorLinked(doctorLinked));
 
+        spec = spec.and(UserSpecification.statusNot(StatusEnum.D));
+
         return userRepository.findAll(spec, pageable);
 
     }
 
 
     public User findById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
-        if (user.getStatus().equals(StatusEnum.D))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
-        return user;
+        return userRepository.findByIdAndStatusNot(id, StatusEnum.D).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
     }
 
     public User deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
-        if (user.getStatus().equals(StatusEnum.D))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        User user = userRepository.findByIdAndStatusNot(id, StatusEnum.D).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
         if (user.getDoctors() != null && !user.getDoctors().isEmpty() && user.getDoctors().getFirst().getStatus() != StatusEnum.D)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário não pode ser deletado, pois está associado a um médico");

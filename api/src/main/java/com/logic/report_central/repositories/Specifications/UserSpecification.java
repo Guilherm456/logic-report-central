@@ -2,6 +2,7 @@ package com.logic.report_central.repositories.Specifications;
 
 import com.logic.report_central.entities.Doctor;
 import com.logic.report_central.entities.User;
+import com.logic.report_central.enums.StatusEnum;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,6 +19,11 @@ public class UserSpecification {
                     criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), likeSearch)
             );
         };
+    }
+
+    public static Specification<User> statusNot(StatusEnum status) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.notEqual(root.get("status"), status);
     }
 
     public static Specification<User> isDoctorLinked(Boolean doctorLinked) {

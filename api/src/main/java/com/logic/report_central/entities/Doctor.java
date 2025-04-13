@@ -66,7 +66,7 @@ public class Doctor {
     @JsonIgnore
     private List<Report> reportsRequest;
 
-    @OneToMany(mappedBy = "doctorExecute",
+    @OneToMany(mappedBy = "doctor",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @JsonIgnore

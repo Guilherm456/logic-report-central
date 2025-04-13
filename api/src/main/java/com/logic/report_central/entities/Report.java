@@ -54,8 +54,8 @@ public class Report {
 
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "id_doctor_execute", updatable = false)
-    private Doctor doctorExecute;
+    @JoinColumn(name = "id_doctor", updatable = false)
+    private Doctor doctor;
 
     @Column(name = "created_at", updatable = false)
     private Date createdAt;

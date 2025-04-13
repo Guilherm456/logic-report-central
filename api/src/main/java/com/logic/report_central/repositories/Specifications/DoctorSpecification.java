@@ -2,6 +2,7 @@ package com.logic.report_central.repositories.Specifications;
 
 import com.logic.report_central.entities.Doctor;
 import com.logic.report_central.enums.DoctorTypeEnum;
+import com.logic.report_central.enums.StatusEnum;
 import org.springframework.data.jpa.domain.Specification;
 
 public class DoctorSpecification {
@@ -16,6 +17,11 @@ public class DoctorSpecification {
                     criteriaBuilder.like(root.get("councilNumber"), likeSearch)
             );
         };
+    }
+
+    public static Specification<Doctor> statusNot(StatusEnum status) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.notEqual(root.get("status"), status);
     }
 
     public static Specification<Doctor> hasType(DoctorTypeEnum type) {

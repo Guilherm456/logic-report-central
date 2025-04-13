@@ -8,7 +8,7 @@ import com.logic.report_central.enums.DoctorTypeEnum;
 import com.logic.report_central.enums.StatusEnum;
 import com.logic.report_central.repositories.DoctorRepository;
 import com.logic.report_central.repositories.ReportRepository;
-import com.logic.report_central.repositories.UsersRepository;
+import com.logic.report_central.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +29,7 @@ public class ReportService {
     private DoctorRepository doctorRepository;
 
     @Autowired
-    private UsersRepository userDetailsService;
+    private UserRepository userDetailsService;
 
     public Report createReport(ReportDTO reportDTO) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -89,10 +89,10 @@ public class ReportService {
         if (report.getStatus().equals(StatusEnum.D))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Laudo não encontrado");
 
-        if (report.getDoctorExecute().getStatus().equals(StatusEnum.D))
+        if (report.getDoctor().getStatus().equals(StatusEnum.D))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico solicitante não encontrado");
 
-        if (!report.getDoctorExecute().getId().equals(doctor.getId()))
+        if (!report.getDoctor().getId().equals(doctor.getId()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Laudo não pertence ao médico logado");
 
         if (!doctor.getType().equals(DoctorTypeEnum.E))
@@ -108,7 +108,7 @@ public class ReportService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Médico solicitante informado não é um especialista para poder solicitar Laudo");
 
         try {
-            report.setDoctorExecute(doctor);
+            report.setDoctor(doctor);
             report.setDoctorRequest(doctorRequester);
             report.setPacientName(reportDTO.getPatient_name());
             report.setPacientGender(reportDTO.getPatient_gender());

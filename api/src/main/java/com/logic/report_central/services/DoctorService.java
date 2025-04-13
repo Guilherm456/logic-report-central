@@ -11,7 +11,7 @@ import com.logic.report_central.repositories.CouncilRepository;
 import com.logic.report_central.repositories.DoctorRepository;
 import com.logic.report_central.repositories.Specifications.DoctorSpecification;
 import com.logic.report_central.repositories.StateRepository;
-import com.logic.report_central.repositories.UsersRepository;
+import com.logic.report_central.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,18 +38,15 @@ public class DoctorService {
     @Autowired
     private CouncilRepository councilRepository;
     @Autowired
-    private UsersRepository userRepository;
+    private UserRepository userRepository;
 
     @Transactional
     public Doctor createDoctor(DoctorDTO doctorDTO) {
-        User user = userRepository.findById(doctorDTO.getUser_id())
+        User user = userRepository.findByIdAndStatusNot(doctorDTO.getUser_id(), StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
         if (user.getUsername().equals(("admin")))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário não pode ser um médico");
-
-        if (user.getStatus().equals(StatusEnum.D))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
 
         Optional<Doctor> existingUser = doctorRepository.findByUserId(user.getId());
         if (existingUser.isPresent() && !existingUser.get().getStatus().equals(StatusEnum.D))
@@ -96,24 +93,20 @@ public class DoctorService {
 
         if (type != null) spec = spec.and(DoctorSpecification.hasType(type));
 
+        spec = spec.and(DoctorSpecification.statusNot(StatusEnum.D));
 
         return doctorRepository.findAll(spec, pageable);
     }
 
     public Doctor findById(Long id) {
-        Doctor doctor = doctorRepository.findById(id)
+        return doctorRepository.findByIdAndStatusNot(id, StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico não encontrado"));
-        if (doctor.getStatus().equals(StatusEnum.D))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico não encontrado");
-        return doctor;
     }
 
     @Transactional
     public Doctor updateDoctor(Long id, DoctorDTO doctorDTO) {
-        Doctor doctor = doctorRepository.findById(id)
+        Doctor doctor = doctorRepository.findByIdAndStatusNot(id, StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico não encontrado"));
-        if (doctor.getStatus().equals(StatusEnum.D))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico não encontrado");
 
 
         Optional<Doctor> existingDoctor = doctorRepository.findByCouncilIdAndCouncilNumberAndStateIdAndStatusNot(
@@ -131,14 +124,11 @@ public class DoctorService {
         Council council = councilRepository.findById(doctorDTO.getCouncil_id())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Conselho não encontrado"));
 
-        User user = userRepository.findById(doctorDTO.getUser_id())
+        User user = userRepository.findByIdAndStatusNot(doctorDTO.getUser_id(), StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
         if (user.getUsername().equals(("admin")))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário não pode ser um médico");
-
-        if (user.getStatus().equals(StatusEnum.D))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
 
         doctor.setName(doctorDTO.getName());
         doctor.setType(doctorDTO.getDoctor_type());
@@ -151,10 +141,9 @@ public class DoctorService {
     }
 
     public Doctor deleteDoctor(Long id) {
-        Doctor doctor = doctorRepository.findById(id)
+        Doctor doctor = doctorRepository.findByIdAndStatusNot(id, StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico não encontrado"));
-        if (doctor.getStatus().equals(StatusEnum.D))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico não encontrado");
+
 
         if (!doctor.getTemplates().isEmpty() && doctor.getTemplates().stream()
                 .anyMatch(template -> !template.getStatus().equals(StatusEnum.D)))

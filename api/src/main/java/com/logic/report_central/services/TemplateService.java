@@ -7,7 +7,7 @@ import com.logic.report_central.entities.User;
 import com.logic.report_central.enums.StatusEnum;
 import com.logic.report_central.repositories.DoctorRepository;
 import com.logic.report_central.repositories.TemplateRepository;
-import com.logic.report_central.repositories.UsersRepository;
+import com.logic.report_central.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,15 +27,12 @@ public class TemplateService {
     private DoctorRepository doctorRepository;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
     public Template createTemplate(TemplateDTO templateDTO) {
 
-        Doctor doctor = doctorRepository.findById(templateDTO.getDoctor_id())
+        Doctor doctor = doctorRepository.findByIdAndStatusNot(templateDTO.getDoctor_id(), StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico não encontrado"));
-
-        if (doctor.getStatus().equals(StatusEnum.D))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico não encontrado");
 
         try {
             Template template = new Template(
@@ -52,14 +49,12 @@ public class TemplateService {
     }
 
     public Template updateTemplate(Long id, TemplateDTO templateDTO) {
-        Template template = templateRepository.findById(id)
+        Template template = templateRepository.findByIdAndStatusNot(id, StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Template não encontrado"));
 
-        Doctor doctor = doctorRepository.findById(templateDTO.getDoctor_id())
+        Doctor doctor = doctorRepository.findByIdAndStatusNot(templateDTO.getDoctor_id(), StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico não encontrado"));
 
-        if (doctor.getStatus().equals(StatusEnum.D))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico não encontrado");
 
         try {
             template.setDescription(templateDTO.getDescription());
@@ -74,13 +69,13 @@ public class TemplateService {
     }
 
     public Template findById(Long id) {
-        return templateRepository.findById(id)
+        return templateRepository.findByIdAndStatusNot(id, StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Template não encontrado"));
     }
 
     public Page<Template> findAllTemplates(int page, int size, String search) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = usersRepository.findByEmail(userEmail);
+        User user = userRepository.findByEmail(userEmail);
 
         if (user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
 
@@ -95,7 +90,7 @@ public class TemplateService {
     }
 
     public Template deleteTemplate(Long id) {
-        Template template = templateRepository.findById(id)
+        Template template = templateRepository.findByIdAndStatusNot(id, StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Template não encontrado"));
 
         try {

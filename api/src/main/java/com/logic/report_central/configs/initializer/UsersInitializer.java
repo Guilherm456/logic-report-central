@@ -1,7 +1,7 @@
 package com.logic.report_central.configs.initializer;
 
 import com.logic.report_central.entities.User;
-import com.logic.report_central.repositories.UsersRepository;
+import com.logic.report_central.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class UsersInitializer implements CommandLineRunner {
 
     @Autowired
-    private UsersRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
     private PasswordEncoder encoder;
 

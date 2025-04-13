@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface DoctorRepository extends JpaRepository<Doctor, Long>, JpaSpecificationExecutor<Doctor> {
 
-    boolean existsByUserId(Long userId);
+    Optional<Doctor> findByIdAndStatusNot(Long id, StatusEnum status);
 
     Optional<Doctor> findByUserId(Long userId);
 

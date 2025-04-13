@@ -12,12 +12,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Table(name = "users")
+@Entity
+
 @Getter
 @Setter
 @RequiredArgsConstructor
 @NoArgsConstructor
-@Table(name = "users")
-@Entity
 public class User {
 
     @Id
@@ -56,6 +57,8 @@ public class User {
 
     @JsonProperty("doctor_linked")
     public Optional<Doctor> doctorLinked() {
+        if (this.doctors == null || this.doctors.isEmpty()) return Optional.empty();
+
         return this.doctors.stream()
                 .filter(doctor -> doctor.getStatus() != StatusEnum.D)
                 .findFirst();
