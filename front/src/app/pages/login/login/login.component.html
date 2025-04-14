@@ -1,0 +1,61 @@
+<div class="min-h-screen flex flex-col md:flex-row bg-gray-50">
+  <div class="w-full md:w-1/2 flex flex-col justify-center items-center p-8">
+    <div class="flex justify-center mb-6 lg:hidden">
+      <img src="assets/logo.svg" alt="Logo" class="h-16 w-32 object-contain" />
+    </div>
+
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-800">Bem-vindo</h1>
+      <p class="text-gray-500 text-sm">Informe seus dados de acesso</p>
+    </div>
+
+    <form
+      (ngSubmit)="onSubmit(loginForm)"
+      #loginForm="ngForm"
+      class="w-full max-w-sm flex flex-col gap-2"
+    >
+      <app-input
+        label="E-mail"
+        type="email"
+        placeholder="exemplo@email.com"
+        id="email"
+        name="email"
+        [(ngModel)]="email"
+        [required]="true"
+        email
+        #emailInput="ngModel"
+      ></app-input>
+
+      <app-input
+        label="Senha"
+        type="password"
+        placeholder="••••••••"
+        id="password"
+        name="password"
+        [(ngModel)]="password"
+        [required]="true"
+        minlength="6"
+        #passwordInput="ngModel"
+      ></app-input>
+
+      <app-button
+        type="submit"
+        class="w-full justify-center py-3 text-base font-medium transition-al"
+        [loading]="loading"
+        [disabled]="loginForm.invalid || loading"
+        id="submit-button"
+      >
+        Entrar
+      </app-button>
+    </form>
+  </div>
+
+  <div
+    class="hidden md:flex md:w-1/2 items-center justify-center bg-brand m-2 rounded-2xl"
+  >
+    <img
+      src="assets/logo_negative.svg"
+      class="w-3/4 h-1/4 max-w-2xl max-h-sm"
+    />
+  </div>
+</div>
