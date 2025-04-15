@@ -1,6 +1,7 @@
 package com.logic.report_central.services;
 
-import com.logic.report_central.dtos.UserDTO;
+import com.logic.report_central.dtos.User.UserCreateDTO;
+import com.logic.report_central.dtos.User.UserUpdateDTO;
 import com.logic.report_central.models.entities.User;
 import com.logic.report_central.models.enums.StatusEnum;
 import com.logic.report_central.repositories.UserRepository;
@@ -27,16 +28,16 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User createUser(UserDTO userDTO) {
-        if (userRepository.findByEmail(userDTO.getEmail()) != null)
+    public User createUser(UserCreateDTO userCreateDTO) {
+        if (userRepository.findByEmail(userCreateDTO.getEmail()) != null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail já cadastrado");
 
         try {
-            String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+            String encodedPassword = passwordEncoder.encode(userCreateDTO.getPassword());
             User user = new User(
-                    userDTO.getEmail(),
+                    userCreateDTO.getEmail(),
                     encodedPassword,
-                    userDTO.getUsername()
+                    userCreateDTO.getUsername()
             );
 
             return userRepository.save(user);
@@ -46,21 +47,17 @@ public class UserService {
         }
     }
 
-    public User updateUser(Long id, UserDTO userDTO) {
+    public User updateUser(Long id, UserUpdateDTO userUpdateDTO) {
         User user = userRepository.findByIdAndStatusNot(id, StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
 
-        if (userRepository.findByEmail(userDTO.getEmail()) != null && !user.getEmail().equals(userDTO.getEmail()))
+        if (userRepository.findByEmail(userUpdateDTO.getEmail()) != null && !user.getEmail().equals(userUpdateDTO.getEmail()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail já cadastrado");
 
         try {
-            user.setEmail(userDTO.getEmail());
-            user.setUsername(userDTO.getUsername());
-            if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-                String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
-                user.setPassword(encodedPassword);
-            }
+            user.setEmail(userUpdateDTO.getEmail());
+            user.setUsername(userUpdateDTO.getUsername());
 
 
             return userRepository.save(user);

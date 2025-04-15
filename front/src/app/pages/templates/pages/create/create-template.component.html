@@ -1,0 +1,54 @@
+<form [formGroup]="templateForm">
+  <app-form-card
+    [header]="isEditMode ? 'Editar Template' : 'Criar Novo Template'"
+    [description]="
+      isEditMode
+        ? 'Altere os dados do template abaixo'
+        : 'Preencha os campos abaixo para criar um novo template'
+    "
+    [loading]="submitting || loading"
+    (handleSave)="onSubmit()"
+    (handleCancel)="cancel()"
+    cancelText="Voltar"
+    [submitText]="isEditMode ? 'Salvar Alterações' : 'Criar Template'"
+  >
+    <app-input
+      type="text"
+      label="Descrição do Template"
+      placeholder="Descrição breve do template"
+      formControlName="description"
+      [errorMessage]="
+        formService.getFormErrorMessage(templateForm.get('description'))
+      "
+      id="description-input"
+    ></app-input>
+
+    <app-textarea
+      type="textarea"
+      label="Conteúdo do Template"
+      placeholder="Conteúdo HTML do template"
+      formControlName="content"
+      id="content-input"
+      [errorMessage]="
+        formService.getFormErrorMessage(templateForm.get('content'))
+      "
+    ></app-textarea>
+
+    <app-autocomplete
+      label="Vincular Médico"
+      placeholder="Digite para buscar e vincular um médico"
+      formControlName="doctor"
+      [options]="doctors"
+      [loading]="loadingDoctors"
+      id="doctor-autocomplete"
+      [required]="true"
+      [hasMore]="hasMoreDoctors"
+      (onMore)="onLoadMoreDoctors()"
+      (onSearch)="onSearchDoctor()"
+      [displayOption]="displayDoctorOption"
+      [errorMessage]="
+        formService.getFormErrorMessage(templateForm.get('doctor'))
+      "
+    ></app-autocomplete>
+  </app-form-card>
+</form>

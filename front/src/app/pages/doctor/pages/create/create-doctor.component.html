@@ -1,0 +1,100 @@
+<form [formGroup]="doctorForm">
+  <app-form-card
+    [header]="isEditMode ? 'Editar Médico' : 'Criar Novo Médico'"
+    [description]="
+      isEditMode
+        ? 'Altere os dados do médico abaixo'
+        : 'Preencha os campos abaixo para criar um novo médico'
+    "
+    [loading]="submitting || loading"
+    (handleSave)="onSubmit()"
+    (handleCancel)="cancel()"
+    cancelText="Voltar"
+    [submitText]="isEditMode ? 'Salvar Alterações' : 'Criar Médico'"
+  >
+    <app-input
+      type="text"
+      label="Nome do Médico"
+      placeholder="Nome completo do médico"
+      formControlName="name"
+      id="name-input"
+      [errorMessage]="formService.getFormErrorMessage(doctorForm.get('name'))"
+    ></app-input>
+
+    <app-input
+      type="text"
+      label="Número do Conselho"
+      placeholder="Ex: 123456"
+      formControlName="council_number"
+      id="council-number-input"
+      [errorMessage]="
+        formService.getFormErrorMessage(doctorForm.get('council_number'))
+      "
+    ></app-input>
+
+    <app-autocomplete
+      label="Conselho Médico"
+      placeholder="Selecione ou digite para buscar"
+      formControlName="council"
+      [options]="councils"
+      [loading]="loadingCouncils"
+      (onSearch)="onSearchCouncil()"
+      [hasMore]="hasMoreCouncils"
+      (onMore)="onLoadMoreCouncils()"
+      [errorMessage]="
+        formService.getFormErrorMessage(doctorForm.get('council'))
+      "
+      id="council-autocomplete"
+    ></app-autocomplete>
+
+    <app-autocomplete
+      label="Estado (UF)"
+      placeholder="Selecione o estado"
+      formControlName="state"
+      [options]="states"
+      [loading]="loadingStates"
+      [errorMessage]="formService.getFormErrorMessage(doctorForm.get('state'))"
+      id="state-autocomplete"
+    ></app-autocomplete>
+
+    <app-autocomplete
+      label="Vincular Usuário"
+      placeholder="Digite para buscar usuário não vinculado"
+      formControlName="user"
+      [options]="users"
+      [loading]="loadingUsers"
+      id="user"
+      [required]="true"
+      [disabled]="isEditMode"
+      [hasMore]="hasMoreUsers"
+      (onMore)="onLoadMoreUsers()"
+      (onSearch)="onSearchUser()"
+      [displayOption]="displayUserOption"
+      [errorMessage]="formService.getFormErrorMessage(doctorForm.get('user'))"
+      id="user-autocomplete"
+      *ngIf="!isEditMode"
+    ></app-autocomplete>
+
+    <app-autocomplete
+      label="Selecionar Especialidade"
+      placeholder="Selecione ou digite para buscar"
+      formControlName="doctor_type"
+      [options]="[
+        {
+          id: 1,
+          name: 'Solicitante',
+          value: 'S'
+        },
+        {
+          id: 2,
+          name: 'Executante',
+          value: 'E'
+        }
+      ]"
+      [errorMessage]="
+        formService.getFormErrorMessage(doctorForm.get('doctor_type'))
+      "
+      id="doctor-type-autocomplete"
+    />
+  </app-form-card>
+</form>

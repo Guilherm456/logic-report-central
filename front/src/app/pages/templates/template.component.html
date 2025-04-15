@@ -1,0 +1,128 @@
+<div class="p-4 md:p-6 lg:p-8 bg-gray-50 min-h-screen">
+  <div
+    class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"
+  >
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Templates</h1>
+      <p class="text-sm text-gray-500">
+        Visualize e gerencie todos os templates cadastrados.
+      </p>
+    </div>
+    <div class="flex items-center gap-2 w-full sm:w-auto">
+      <div class="flex-grow sm:flex-grow-0 sm:w-64">
+        <app-input
+          label="Buscar por template"
+          name="description-template"
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+          [disabled]="loading"
+          class="h-10"
+          autocomplete="off"
+          id="search-input"
+        >
+        </app-input>
+      </div>
+      <app-button (click)="createTemplate()" id="create-template-button">
+        <span class="material-icons-outlined text-base mr-1">add</span>
+        <span class="hidden md:block"> Criar template </span>
+      </app-button>
+    </div>
+  </div>
+
+  <div
+    *ngIf="loading"
+    class="animate-pulse w-full h-[350px] bg-gray-300 rounded-md"
+  ></div>
+
+  <div *ngIf="!loading">
+    <div
+      *ngIf="templates.length === 0"
+      class="text-center text-gray-500 py-16 bg-white rounded-lg shadow border border-gray-200 w-max px-8 mx-auto"
+    >
+      <span class="material-icons-outlined text-5xl text-gray-400 mb-2"
+        >search_off</span
+      >
+      <p>Nenhum template encontrado com os critérios atuais.</p>
+    </div>
+
+    <div
+      *ngIf="templates.length > 0"
+      class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
+    >
+      <div
+        *ngFor="let template of templates"
+        class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden flex flex-col"
+      >
+        <div class="p-4 flex-grow">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <span class="text-lg font-semibold text-gray-800 leading-tight">
+                {{ template.description }}
+              </span>
+              <p class="text-sm text-gray-500 truncate">
+                {{ template.content }}
+              </p>
+            </div>
+            <span
+              class="text-xs font-medium px-2.5 py-0.5 rounded-full flex items-center whitespace-nowrap mt-1"
+              [ngClass]="{
+                'bg-green-100 text-green-800': template.active,
+                'bg-red-100 text-red-800': !template.active
+              }"
+            >
+              <span
+                class="w-2 h-2 rounded-full mr-1.5"
+                [ngClass]="template.active ? 'bg-green-500' : 'bg-red-500'"
+              ></span>
+              {{ template.active ? "Ativo" : "Inativo" }}
+            </span>
+          </div>
+
+          <div class="text-xs text-gray-400 mt-3">
+            <span> {{ template.createdAt | date : "dd/MM/yyyy" }}</span>
+          </div>
+        </div>
+
+        <div
+          class="border-t border-gray-200 bg-gray-50 px-4 py-2 flex justify-end items-center"
+        >
+          <app-button
+            (click)="editTemplate(template.id)"
+            className="text-sm bg-transparent hover:bg-gray-100 !text-gray-700"
+          >
+            <app-icon icon="edit" />
+            Editar
+          </app-button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      *ngIf="pagination && pagination.totalItems > pagination.size"
+      class="mt-8 flex justify-center items-center gap-2"
+    >
+      <app-button
+        (click)="goToPage(currentPage - 1)"
+        [disabled]="!pagination.hasPrevious || loading"
+        className="bg-white !text-gray-700 border border-gray-300 hover:bg-gray-100 py-1 px-3 text-sm disabled:bg-gray-100"
+      >
+        <span class="material-icons-outlined text-base">chevron_left</span>
+      </app-button>
+
+      <span class="text-sm text-gray-600 font-medium">
+        Página {{ currentPage + 1 }} de {{ totalPages }}
+        <span class="text-gray-400 font-normal hidden sm:inline">
+          ({{ pagination.totalItems }} templates)</span
+        >
+      </span>
+
+      <app-button
+        (click)="goToPage(currentPage + 1)"
+        [disabled]="!pagination.hasNext || loading"
+        className="bg-white !text-gray-700 border border-gray-300 hover:bg-gray-100 py-1 px-3 text-sm disabled:bg-gray-100"
+      >
+        <span class="material-icons-outlined">chevron_right</span>
+      </app-button>
+    </div>
+  </div>
+</div>

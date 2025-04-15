@@ -1,4 +1,3 @@
-// user-form.component.ts
 import { CommonModule, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
@@ -9,10 +8,23 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { createUser } from '@api_methods/users/create';
+import { getUser } from '@api_methods/users/get';
+import { updateUser } from '@api_methods/users/update';
+import { FormCardComponent } from '@components/shared/form-card/form-card.component';
 import { UiModule } from '@components/ui.module';
+import { FormService } from '@services/components/form.service';
+import { ToastService } from '@services/components/toast.service';
 
 @Component({
-  imports: [FormsModule, NgIf, CommonModule, ReactiveFormsModule, UiModule],
+  imports: [
+    FormsModule,
+    NgIf,
+    CommonModule,
+    ReactiveFormsModule,
+    UiModule,
+    FormCardComponent,
+  ],
   selector: 'app-user-form',
   templateUrl: './create-user.component.html',
 })
@@ -26,7 +38,9 @@ export class UserFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService,
+    public formService: FormService
   ) {
     this.userForm = this.fb.group({
       username: [
@@ -39,10 +53,9 @@ export class UserFormComponent implements OnInit {
       ],
       email: [
         '',
-        [Validators.required, Validators.email, Validators.maxLength(150)],
+        [Validators.required, Validators.email, Validators.maxLength(50)],
       ],
       password: ['', [Validators.minLength(6), Validators.maxLength(100)]],
-      active: [true],
     });
   }
 
@@ -66,40 +79,56 @@ export class UserFormComponent implements OnInit {
     });
   }
 
-  loadUserData(): void {
-    // this.loading = true;
-    // this.userService
-    //   .getCurrentUser(this.userId!)
-    //   .pipe(finalize(() => (this.loading = false)))
-    //   .subscribe({
-    //     next: (user) => {
-    //       this.userForm.patchValue({
-    //         username: user.username,
-    //         email: user.email,
-    //         active: user.active,
-    //       });
-    //     },
-    //     error: () => this.router.navigate(['/users']),
-    //   });
+  async loadUserData() {
+    this.loading = true;
+
+    try {
+      const data = await getUser({ id: this.userId! });
+      this.userForm.patchValue({
+        username: data.username,
+        email: data.email,
+        active: data.active,
+      });
+    } catch (error) {
+      this.toastService.showToast({
+        message: 'Erro ao carregar os dados do usuário',
+        type: 'error',
+      });
+    }
+    this.loading = false;
   }
 
-  onSubmit(): void {
-    if (this.userForm.invalid) return;
+  async onSubmit() {
+    if (!this.userForm.valid) {
+      this.toastService.showToast({
+        message: 'Por favor, preencha todos os campos obrigatórios.',
+        type: 'error',
+      });
+      this.formService.markAllAsTouched(this.userForm);
+      return;
+    }
 
     this.submitting = true;
     const userData = this.prepareData();
 
-    // const operation = this.isEditMode
-    //   ? this.userService.updateUser(this.userId!, userData)
-    //   : this.userService.createUser(userData);
-
-    // operation.pipe(finalize(() => (this.submitting = false))).subscribe({
-    //   next: () => this.router.navigate(['/users']),
-    //   error: (error) => {
-    //     // Tratar erros específicos aqui
-    //     console.error('Error:', error);
-    //   },
-    // });
+    try {
+      await (this.isEditMode
+        ? updateUser({ data: userData, id: this.userId! })
+        : createUser({ data: userData }));
+      this.toastService.showToast({
+        message: this.isEditMode
+          ? 'Usuário atualizado com sucesso'
+          : 'Usuário criado com sucesso',
+        type: 'success',
+      });
+      this.router.navigate(['/users']);
+    } catch (error: any) {
+      this.toastService.showToast({
+        message: error.response?.data?.message || 'Erro ao salvar os dados',
+        type: 'error',
+      });
+    }
+    this.submitting = false;
   }
 
   private prepareData(): any {

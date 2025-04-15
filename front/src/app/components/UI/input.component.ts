@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   forwardRef,
@@ -33,9 +34,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
             errorMessage,
           'border-gray-300 focus:border-brand focus:ring-brand': !errorMessage
         }"
-        class="peer block w-full appearance-none rounded-md 
-        border bg-white px-3 pt-6 pb-2 
-        text-sm text-gray-900 focus:outline-none focus:ring-1 disabled:bg-gray-100 placeholder:opacity-0 focus:placeholder:opacity-100 placeholder:text-gray-400 
+        class="peer block w-full appearance-none rounded-md
+        border bg-white px-3 pt-6 pb-2
+        text-sm text-gray-900 focus:outline-none focus:ring-1 disabled:bg-gray-100 placeholder:opacity-0 focus:placeholder:opacity-100 placeholder:text-gray-400
         h-10
         {{ className }}"
       />
@@ -43,7 +44,11 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       <label
         *ngIf="label"
         [attr.for]="id"
-        class="absolute left-3 text-sm text-gray-500 pointer-events-none transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-sm peer-focus:text-gray-600 select-none"
+        class="absolute left-3 text-sm text-gray-500 pointer-events-none transition-all
+        peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
+        peer-focus:top-1 peer-focus:text-sm peer-focus:text-gray-600
+        peer-not-placeholder-shown:top-1 peer-not-placeholder-shown:text-sm peer-not-placeholder-shown:text-gray-600
+        select-none"
       >
         {{ label }}
       </label>
@@ -81,6 +86,8 @@ export class InputComponent implements ControlValueAccessor {
   innerValue: string | number = '';
   onChange: (value: string | number) => void = () => {};
 
+  constructor(private cdRef: ChangeDetectorRef) {}
+
   @Input()
   set value(val: string | number) {
     if (val !== this.innerValue) {
@@ -93,8 +100,15 @@ export class InputComponent implements ControlValueAccessor {
     return this.innerValue;
   }
 
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.cdRef.detectChanges();
+    });
+  }
+
   writeValue(value: string | number | null): void {
     this.innerValue = value ?? '';
+    this.cdRef.markForCheck();
   }
 
   registerOnChange(fn: (value: string | number) => void): void {

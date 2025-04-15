@@ -12,7 +12,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     @Query("""
             SELECT r FROM Report r
-            WHERE LOWER(r.pacientName) LIKE %:searchTerm%
+            WHERE LOWER(r.patientName) LIKE %:searchTerm%
             OR LOWER(r.content) LIKE %:searchTerm%
             OR LOWER(r.doctor.name) LIKE %:searchTerm%
             OR LOWER(r.doctorRequest.name) LIKE %:searchTerm%

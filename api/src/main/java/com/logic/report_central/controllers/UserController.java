@@ -1,6 +1,7 @@
 package com.logic.report_central.controllers;
 
-import com.logic.report_central.dtos.UserDTO;
+import com.logic.report_central.dtos.User.UserCreateDTO;
+import com.logic.report_central.dtos.User.UserUpdateDTO;
 import com.logic.report_central.dtos.shared.PaginationDTO;
 import com.logic.report_central.models.entities.User;
 import com.logic.report_central.services.UserService;
@@ -19,14 +20,14 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) {
-        User user = userService.createUser(userDTO);
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
+        User user = userService.createUser(userCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
-        return ResponseEntity.ok(userService.updateUser(id, userDTO));
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO userUpdateDTO) {
+        return ResponseEntity.ok(userService.updateUser(id, userUpdateDTO));
     }
 
     @GetMapping("/{id}")

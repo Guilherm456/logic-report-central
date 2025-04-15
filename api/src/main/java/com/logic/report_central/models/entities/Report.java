@@ -31,17 +31,17 @@ public class Report {
     private StatusEnum status;
 
     @NonNull
-    @Column(name = "pacient_name", length = 50, nullable = false)
-    private String pacientName;
+    @Column(name = "patient_name", length = 50, nullable = false)
+    private String patientName;
 
     @NonNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "pacient_gender", columnDefinition = "CHAR(1)", nullable = false)
-    private Gender pacientGender;
+    @Column(name = "patient_gender", columnDefinition = "CHAR(1)", nullable = false)
+    private Gender patientGender;
 
     @NonNull
-    @Column(name = "pacient_birth_date", nullable = false)
-    private Date pacientBirthDate;
+    @Column(name = "patient_birth_date", nullable = false)
+    private Date patientBirthDate;
 
     @NonNull
     @Column(columnDefinition = "TEXT", nullable = false)

@@ -9,7 +9,10 @@ import {
   HostListener,
   Inject,
   Input,
+  OnChanges,
+  OnDestroy,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { debounce } from 'lodash';
@@ -37,9 +40,11 @@ import { SpinnerComponent } from './spinner.component';
         (focus)="onFocus()"
         (keydown)="onKeyDown($event)"
         [errorMessage]="errorMessage"
-        class="pr-8"
+        className="pr-8"
+        aria-autocomplete="list"
+        [attr.aria-expanded]="isOpen"
+        [attr.aria-controls]="id + '-listbox'"
       ></app-input>
-      <!-- Ícone de dropdown -->
       <span
         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
       >
@@ -59,19 +64,65 @@ import { SpinnerComponent } from './spinner.component';
         </svg>
       </span>
 
+      <span
+        class="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1"
+        *ngIf="displayValue"
+      >
+        <button
+          type="button"
+          (click)="clearSelection()"
+          class="text-gray-400 hover:text-gray-600 transition-colors"
+          tabindex="-1"
+          aria-label="Limpar seleção"
+        >
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        <span class="text-gray-400 pointer-events-none">
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </span>
+      </span>
+
       <!-- Dropdown -->
       <div
         *ngIf="isOpen"
-        class="absolute z-20 -mt-4 w-full rounded-lg bg-white shadow-xl ring-1 ring-gray-200 transition-all duration-200 ease-in-out"
-        [ngClass]="
-          isOpen
-            ? 'opacity-100 scale-y-100'
-            : 'opacity-0 scale-y-95 pointer-events-none'
-        "
+        id="{{ id }}-listbox"
+        role="listbox"
+        class="absolute z-20 mt-2 w-full rounded-lg bg-white shadow-xl ring-1 ring-gray-200 transition-all duration-200 ease-in-out"
+        [ngClass]="{
+          'opacity-100 scale-y-100': isOpen,
+          'opacity-0 scale-y-95': !isOpen
+        }"
       >
         <ul
           *ngIf="filteredOptions.length > 0"
           class="py-1 text-sm text-gray-900 max-h-60 overflow-auto"
+          role="presentation"
         >
           <li
             *ngFor="let option of filteredOptions; let i = index"
@@ -81,6 +132,9 @@ import { SpinnerComponent } from './spinner.component';
               'bg-gray-50 text-gray-900': highlightIndex === i,
               'cursor-pointer': true
             }"
+            [id]="id + '-option-' + i"
+            role="option"
+            [attr.aria-selected]="highlightIndex === i"
             class="px-4 py-2 hover:bg-gray-50 transition-colors duration-150"
           >
             {{ displayOption(option) }}
@@ -89,6 +143,7 @@ import { SpinnerComponent } from './spinner.component';
             *ngIf="hasMore && !loading && onMore"
             (mousedown)="loadMore()"
             class="px-4 py-2 text-center text-gray-600 hover:bg-gray-50 cursor-pointer transition-colors duration-150"
+            role="option"
           >
             Buscar mais
           </li>
@@ -115,7 +170,9 @@ import { SpinnerComponent } from './spinner.component';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AutocompleteComponent implements ControlValueAccessor {
+export class AutocompleteComponent<T = any>
+  implements ControlValueAccessor, OnDestroy, OnChanges
+{
   @Input() label: string = '';
   @Input() disabled: boolean = false;
   @Input() required: boolean = false;
@@ -127,29 +184,29 @@ export class AutocompleteComponent implements ControlValueAccessor {
   @Input() name: string = '';
   @Input() placeholder: string = '';
   @Input() autocomplete: string = 'off';
-  @Input() options: Array<{ id: string | number; [key: string]: any }> = [];
+  @Input() options: T[] = [];
   @Input() loading: boolean = false;
-  @Input() onSearch?: (value?: string) => void;
-  @Input() isOptionEqual?: (
-    value: any,
-    option: { id: string | number; [key: string]: any }
-  ) => boolean;
-  @Output() onChange = new EventEmitter<{
-    id: string | number;
-    [key: string]: any;
-  } | null>();
-  @Output() onMore = new EventEmitter<number>();
+  @Input() hasMore: boolean = false;
 
-  private innerValue: any = null;
+  @Input() isOptionEqual: (a: T, b: T) => boolean = (a, b) =>
+    (a as any)?.id === (b as any)?.id || a === b;
+  @Input() displayOption: (option: T) => string = (option) =>
+    (option as any)?.name || '';
+
+  @Output() onMore = new EventEmitter<number>();
+  @Output() onSearch = new EventEmitter<string>();
+  @Output() onSelect = new EventEmitter<T | null>();
+
+  private innerValue: T | null = null;
   private page: number = 1;
   highlightIndex: number = -1;
-  filteredOptions: Array<{ id: string | number; [key: string]: any }> = [];
+  filteredOptions: T[] = [];
   isOpen: boolean = false;
   displayValue: string = '';
 
   private debouncedSearch: (value?: string) => void;
   private onTouchedCallback: () => void = () => {};
-  private onChangeCallback: (value: any) => void = () => {};
+  private onChangeCallback: (value: T | null) => void = () => {};
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -157,12 +214,25 @@ export class AutocompleteComponent implements ControlValueAccessor {
     @Inject(DOCUMENT) private document: Document
   ) {
     this.debouncedSearch = debounce((value?: string) => {
-      if (this.onSearch) {
-        this.onSearch(value);
-      } else {
+      this.onSearch.emit(value);
+      if (!this.onSearch.observers.length) {
         this.filterOptions(value);
       }
+      this.cdr.detectChanges();
     }, 300);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['options']) {
+      this.filteredOptions = [...this.options];
+      this.updateDisplayValue();
+      this.resetHighlight();
+      this.cdr.detectChanges();
+    }
+  }
+
+  ngOnDestroy(): void {
+    (this.debouncedSearch as any).cancel();
   }
 
   @HostListener('document:click', ['$event'])
@@ -170,35 +240,47 @@ export class AutocompleteComponent implements ControlValueAccessor {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.isOpen = false;
       this.onTouchedCallback();
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
     }
   }
 
-  get value(): any {
+  clearSelection(): void {
+    this.value = null;
+    this.displayValue = '';
+    this.isOpen = false;
+    this.filteredOptions = [...this.options];
+    this.onChangeCallback(null);
+    this.onSelect.emit(null);
+    this.cdr.detectChanges();
+  }
+  get value(): T | null {
     return this.innerValue;
   }
 
-  set value(val: any) {
-    if (
-      !this.isOptionEqual ||
-      !this.innerValue ||
-      !this.isOptionEqual(val, this.innerValue)
-    ) {
+  set value(val: T | null) {
+    const areDifferent =
+      (this.innerValue === null && val !== null) ||
+      (this.innerValue !== null && val === null) ||
+      (this.innerValue !== null &&
+        val !== null &&
+        !this.isOptionEqual(this.innerValue, val));
+
+    if (areDifferent) {
       this.innerValue = val;
       this.updateDisplayValue();
       this.onChangeCallback(val);
-      this.onChange.emit(val);
-      this.cdr.markForCheck();
+      this.onSelect.emit(val);
+      this.cdr.detectChanges();
     }
   }
 
-  writeValue(value: any): void {
+  writeValue(value: T | null): void {
     this.innerValue = value;
     this.updateDisplayValue();
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
-  registerOnChange(fn: (value: any) => void): void {
+  registerOnChange(fn: (value: T | null) => void): void {
     this.onChangeCallback = fn;
   }
 
@@ -208,7 +290,7 @@ export class AutocompleteComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   onInputChange(event: Event): void {
@@ -217,21 +299,21 @@ export class AutocompleteComponent implements ControlValueAccessor {
     this.isOpen = true;
     this.innerValue = null;
     this.onChangeCallback(null);
-    this.onChange.emit(null);
+    this.onSelect.emit(null);
     this.debouncedSearch(target.value);
-    this.cdr.markForCheck();
+    this.resetHighlight();
+    this.cdr.detectChanges();
   }
 
   onFocus(): void {
     this.isOpen = true;
     this.debouncedSearch(this.displayValue);
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   handleBlur(): void {
-    // Apenas marca como touched, o fechamento é tratado pelo click fora
     this.onTouchedCallback();
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   onKeyDown(event: KeyboardEvent): void {
@@ -257,30 +339,25 @@ export class AutocompleteComponent implements ControlValueAccessor {
         break;
       case 'Escape':
         this.isOpen = false;
+        this.resetHighlight();
         break;
     }
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
-  selectOption(option: { id: string | number; [key: string]: any }): void {
+  selectOption(option: T): void {
     this.value = option;
     this.isOpen = false;
-    this.highlightIndex = -1;
-    this.cdr.markForCheck();
+    this.resetHighlight();
+    this.cdr.detectChanges();
   }
 
   private updateDisplayValue(): void {
-    if (this.innerValue && typeof this.innerValue === 'object') {
+    if (this.innerValue) {
       this.displayValue = this.displayOption(this.innerValue);
     } else {
-      this.displayValue = this.innerValue?.toString() || '';
+      this.displayValue = '';
     }
-  }
-
-  displayOption(option: { id: string | number; [key: string]: any }): string {
-    return (
-      option?.['name'] || option?.['label'] || option?.id?.toString() || ''
-    );
   }
 
   private filterOptions(searchTerm?: string): void {
@@ -292,7 +369,12 @@ export class AutocompleteComponent implements ControlValueAccessor {
         this.displayOption(option).toLowerCase().includes(lowerSearch)
       );
     }
-    this.cdr.markForCheck();
+    this.resetHighlight();
+    this.cdr.detectChanges();
+  }
+
+  private resetHighlight(): void {
+    this.highlightIndex = -1;
   }
 
   loadMore(): void {
@@ -300,12 +382,5 @@ export class AutocompleteComponent implements ControlValueAccessor {
       this.page++;
       this.onMore.emit(this.page);
     }
-  }
-
-  get hasMore(): boolean {
-    return (
-      this.options.length > 0 &&
-      this.filteredOptions.length >= this.options.length
-    );
   }
 }

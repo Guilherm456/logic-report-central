@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { User } from '@models';
 import { api } from '@utils/api';
 import Cookies from 'js-cookie';
@@ -9,7 +10,7 @@ export class UserService {
   private userSubject = new BehaviorSubject<User | null>(null);
   public user$: Observable<User | null> = this.userSubject.asObservable();
 
-  constructor() {
+  constructor(private route: Router) {
     this.initializeUserData();
   }
 
@@ -36,6 +37,17 @@ export class UserService {
 
   getCurrentUser(): User | null {
     return this.userSubject.value;
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getCurrentUser();
+  }
+
+  logout(): void {
+    Cookies.remove('token');
+
+    this.userSubject.next(null);
+    this.route.navigate(['/login']);
   }
 
   clearUser(): void {

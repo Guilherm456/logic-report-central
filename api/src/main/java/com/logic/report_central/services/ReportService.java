@@ -110,9 +110,9 @@ public class ReportService {
         try {
             report.setDoctor(doctor);
             report.setDoctorRequest(doctorRequester);
-            report.setPacientName(reportDTO.getPatient_name());
-            report.setPacientGender(reportDTO.getPatient_gender());
-            report.setPacientBirthDate(reportDTO.getPatient_birth_date());
+            report.setPatientName(reportDTO.getPatient_name());
+            report.setPatientGender(reportDTO.getPatient_gender());
+            report.setPatientBirthDate(reportDTO.getPatient_birth_date());
             report.setContent(reportDTO.getReport_content());
             return reportRepository.save(report);
         } catch (Exception e) {

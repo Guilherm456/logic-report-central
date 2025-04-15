@@ -1,6 +1,7 @@
 package com.logic.report_central.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.logic.report_central.models.enums.DoctorTypeEnum;
@@ -42,7 +43,8 @@ public class Doctor {
 
     @NonNull
     @ManyToOne()
-    @JsonIgnore
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnoreProperties("doctor_linked")
     private User user;
 
     @NonNull

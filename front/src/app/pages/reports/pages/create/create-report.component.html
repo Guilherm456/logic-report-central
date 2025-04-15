@@ -1,0 +1,90 @@
+<form [formGroup]="reportForm">
+  <app-form-card
+    [header]="isEditMode ? 'Editar Laudo' : 'Novo Laudo'"
+    [description]="
+      isEditMode
+        ? 'Atualize os dados do laudo'
+        : 'Preencha os campos para criar um novo laudo'
+    "
+    [loading]="submitting || loading"
+    (handleSave)="onSubmit()"
+    (handleCancel)="cancel()"
+    cancelText="Cancelar"
+    [submitText]="isEditMode ? 'Salvar' : 'Criar'"
+  >
+    <app-input
+      type="text"
+      label="Nome do Paciente"
+      placeholder="Nome completo do paciente"
+      formControlName="patientName"
+      [errorMessage]="
+        formService.getFormErrorMessage(reportForm.get('patientName'))
+      "
+      id="patient-name"
+    ></app-input>
+
+    <app-autocomplete
+      label="Gênero do Paciente"
+      placeholder="Selecione o gênero"
+      formControlName="patientGender"
+      [options]="genderOptions"
+      [errorMessage]="
+        formService.getFormErrorMessage(reportForm.get('patientGender'))
+      "
+      id="patient-gender"
+    ></app-autocomplete>
+
+    <app-input
+      type="date"
+      label="Data de Nascimento"
+      formControlName="patientBirthDate"
+      [errorMessage]="
+        formService.getFormErrorMessage(reportForm.get('patientBirthDate'))
+      "
+      id="birth-date"
+    ></app-input>
+
+    <app-autocomplete
+      label="Médico Solicitante"
+      placeholder="Busque por nome ou CRM"
+      formControlName="doctorRequest"
+      [options]="doctors"
+      [loading]="loadingDoctors"
+      [hasMore]="hasMoreDoctors"
+      (onMore)="onLoadMoreDoctors()"
+      (onSearch)="onSearchDoctor($event)"
+      [displayOption]="displayDoctorOption"
+      [errorMessage]="
+        formService.getFormErrorMessage(reportForm.get('doctorRequest'))
+      "
+      id="doctor-requester"
+    ></app-autocomplete>
+
+    <app-autocomplete
+      label="Usar Template Existente"
+      placeholder="Busque por descrição ou médico"
+      formControlName="selectedTemplate"
+      [options]="templates"
+      [loading]="loadingTemplates"
+      [hasMore]="hasMoreTemplates"
+      (onMore)="onLoadMoreTemplates()"
+      (onSearch)="onSearchTemplate()"
+      (onSelect)="onTemplateSelected($event)"
+      (onClear)="clearTemplate()"
+      *ngIf="!isEditMode"
+      [displayOption]="displayTemplateOption"
+      id="template-selector"
+    >
+    </app-autocomplete>
+    <app-textarea
+      label="Conteúdo do Laudo"
+      placeholder="Digite o conteúdo do laudo"
+      formControlName="content"
+      [errorMessage]="
+        formService.getFormErrorMessage(reportForm.get('content'))
+      "
+      [disabled]="reportForm.get('selectedTemplate')?.value"
+      id="report-content"
+    ></app-textarea>
+  </app-form-card>
+</form>

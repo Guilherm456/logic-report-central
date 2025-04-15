@@ -41,7 +41,7 @@ export class LoginComponent {
       if (token) {
         this.cookieService.set('token', token);
 
-        this.router.navigate(['/']);
+        this.router.navigate(['/users']);
       }
     } catch (error: any) {
       this.toastService.showToast({

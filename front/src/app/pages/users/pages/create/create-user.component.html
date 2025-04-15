@@ -1,61 +1,36 @@
-<!-- user-form.component.html -->
-<div class="p-4 md:p-6 lg:p-8 bg-gray-50 min-h-screen">
-  <div
-    class="max-w-2xl mx-auto bg-white rounded-lg shadow border border-gray-200"
+<form [formGroup]="userForm">
+  <app-form-card
+    header="Criar Novo Usuário"
+    description="Preencha os campos abaixo para criar um novo usuário"
+    [loading]="submitting"
+    (handleSave)="onSubmit()"
+    (handleCancel)="cancel()"
+    cancelText="Voltar"
+    submitText="{{ isEditMode ? 'Salvar dados' : 'Criar usuário' }}"
   >
-    <div class="p-6 border-b border-gray-200">
-      <h2 class="text-xl font-semibold text-gray-800">
-        {{ isEditMode ? "Editar Usuário" : "Novo Usuário" }}
-      </h2>
-    </div>
+    <app-input
+      type="text"
+      label="Nome"
+      placeholder="Nome completo"
+      formControlName="username"
+      [errorMessage]="formService.getFormErrorMessage(userForm.get('username'))"
+    ></app-input>
 
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6">
-      <div *ngIf="loading" class="text-center py-4">
-        <app-spinner></app-spinner>
-        <span class="ml-2 text-gray-600">Carregando dados do usuário...</span>
-      </div>
+    <app-input
+      label="E-mail"
+      placeholder="exemplo@exemplo.com"
+      type="email"
+      formControlName="email"
+      [errorMessage]="formService.getFormErrorMessage(userForm.get('email'))"
+    ></app-input>
 
-      <div *ngIf="!loading" class="flex flex-col gap-2">
-        <app-input
-          type="text"
-          label="Nome"
-          placeholder="Nome completo"
-          formControlName="username"
-        ></app-input>
-
-        <app-input
-          label="E-mail"
-          placeholder="exemplo@exemplo.com"
-          type="email"
-          formControlName="email"
-        ></app-input>
-
-        <app-input
-          label="Senha"
-          placeholder="••••••••"
-          type="password"
-          formControlName="password"
-        ></app-input>
-      </div>
-
-      <div class="flex justify-end space-x-3 pt-6">
-        <app-button
-          type="button"
-          className="bg-gray-100 hover:bg-gray-200 !text-gray-700"
-          (click)="cancel()"
-          [disabled]="submitting"
-        >
-          Cancelar
-        </app-button>
-
-        <app-button
-          type="submit"
-          [disabled]="userForm.invalid || submitting"
-          [loading]="submitting"
-        >
-          {{ isEditMode ? "Salvar Alterações" : "Criar Usuário" }}
-        </app-button>
-      </div>
-    </form>
-  </div>
-</div>
+    <app-input
+      *ngIf="!isEditMode"
+      label="Senha"
+      placeholder="••••••••"
+      type="password"
+      formControlName="password"
+      [errorMessage]="formService.getFormErrorMessage(userForm.get('password'))"
+    ></app-input>
+  </app-form-card>
+</form>
