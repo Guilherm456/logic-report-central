@@ -34,7 +34,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/v1/api-docs/**").permitAll()
+                        .requestMatchers("/auth/**", "/actuator", "/actuator/health", "/swagger-ui.html", "/swagger-ui/**", "/v1/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -42,13 +42,13 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors-> cors.configurationSource(corsConfiguration()));
+                .cors(cors -> cors.configurationSource(corsConfiguration()));
 
         return http.build();
     }
 
     @Bean
-    public CorsConfigurationSource corsConfiguration(){
+    public CorsConfigurationSource corsConfiguration() {
         CorsConfiguration cors = new CorsConfiguration();
         cors.setAllowedOrigins(allowedOrigins);
         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
