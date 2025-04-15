@@ -5,18 +5,24 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
+import { UserService } from '@services/user.service';
 import { CookieService } from 'ngx-cookie-service';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router, private cookieService: CookieService) {}
+  constructor(
+    private router: Router,
+    private cookieService: CookieService,
+    private userService: UserService
+  ) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): boolean {
+  ): boolean | Observable<boolean> {
     const token = this.cookieService.get('token');
     const isLoginPage = state.url === '/login';
 
@@ -28,6 +34,20 @@ export class AuthGuard implements CanActivate {
     if (!token && !isLoginPage) {
       this.router.navigate(['/login']);
       return false;
+    }
+
+    if (token && !isLoginPage) {
+      if (this.userService.getCurrentUser()) {
+        return true;
+      }
+
+      return this.userService.fetchUserData().pipe(
+        map((user) => {
+          if (user) return true;
+          this.router.navigate(['/login']);
+          return false;
+        })
+      );
     }
 
     return true;

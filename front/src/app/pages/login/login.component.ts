@@ -4,26 +4,23 @@ import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UiModule } from '@components/ui.module';
+import { ToastService } from '@services/components/toast.service';
 import { CookieService } from 'ngx-cookie-service';
-import { ButtonModule } from 'primeng/button';
-import { FloatLabelModule } from 'primeng/floatlabel';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  imports: [
-    FormsModule,
-    CommonModule,
-    UiModule,
-    ButtonModule,
-    FloatLabelModule,
-  ],
+  imports: [FormsModule, CommonModule, UiModule],
 })
 export class LoginComponent {
   email = '';
   password = '';
   loading = false;
 
-  constructor(private router: Router, private cookieService: CookieService) {}
+  constructor(
+    private router: Router,
+    private cookieService: CookieService,
+    private toastService: ToastService
+  ) {}
 
   async onSubmit(loginForm: NgForm): Promise<void> {
     const credentials = {
@@ -36,18 +33,22 @@ export class LoginComponent {
 
       const token = response.data.token;
 
+      this.toastService.showToast({
+        message: 'Login realizado com sucesso!',
+        type: 'success',
+      });
+
       if (token) {
         this.cookieService.set('token', token);
 
         this.router.navigate(['/']);
-      } else {
       }
     } catch (error: any) {
-      console.error('Login error:', error);
+      this.toastService.showToast({
+        message: error.response?.data?.message || 'Verifique suas credenciais',
+        type: 'error',
+      });
     }
     this.loading = false;
-  }
-  goToForgotPassword() {
-    this.router.navigate(['/forgot-password']);
   }
 }

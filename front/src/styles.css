@@ -3,6 +3,30 @@
 @theme {
   --color-brand: #2454a6;
   --color-brand-light: #00aeff;
+
+  --animate-slide-in: slideIn 0.3s ease-in-out;
+  --animate-slide-out: slideOut 0.3s ease-in-out;
+  @keyframes slideIn {
+    0% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOut {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
 }
 
 * {

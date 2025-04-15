@@ -1,0 +1,130 @@
+<div class="p-4 md:p-6 lg:p-8 bg-gray-50 min-h-screen">
+  <div
+    class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"
+  >
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Usuários</h1>
+      <p class="text-sm text-gray-500">
+        Visualize e gerencie todos os usuários cadastrados.
+      </p>
+    </div>
+    <div class="flex items-center gap-2 w-full sm:w-auto">
+      <div class="flex-grow sm:flex-grow-0 sm:w-64">
+        <app-input
+          label="Buscar por nome ou e-mail"
+          id="user-search"
+          name="user-search"
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+          [disabled]="loading"
+          class="h-10"
+          autocomplete="off"
+          #searchInput
+        >
+        </app-input>
+      </div>
+      <app-button (click)="createUser()">
+        <span class="material-icons-outlined text-base mr-1">add</span>
+        <span class="hidden md:block"> Criar Usuário </span>
+      </app-button>
+    </div>
+  </div>
+
+  <div
+    *ngIf="loading"
+    class="w-full h-full flex justify-center items-center bg-gray-50 bg-opacity-50 z-10"
+  >
+    <app-spinner></app-spinner>
+    <span class="ml-3 text-lg text-gray-600">Carregando usuários...</span>
+  </div>
+
+  <div *ngIf="!loading">
+    <div
+      *ngIf="users.length === 0"
+      class="text-center text-gray-500 py-16 bg-white rounded-lg shadow border border-gray-200"
+    >
+      <span class="material-icons-outlined text-5xl text-gray-400 mb-2"
+        >search_off</span
+      >
+      <p>Nenhum usuário encontrado com os critérios atuais.</p>
+    </div>
+
+    <div
+      *ngIf="users.length > 0"
+      class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
+    >
+      <div
+        *ngFor="let user of users"
+        class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden flex flex-col transition duration-200 ease-in-out"
+      >
+        <div class="p-4 flex-grow">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <span class="text-lg font-semibold text-gray-800 leading-tight">
+                {{ user.username }}
+              </span>
+              <p class="text-sm text-gray-500">{{ user.email }}</p>
+            </div>
+            <span
+              class="text-xs font-medium px-2.5 py-0.5 rounded-full flex items-center whitespace-nowrap mt-1"
+              [ngClass]="{
+                'bg-green-100 text-green-800': user.active,
+                'bg-red-100 text-red-800': !user.active
+              }"
+            >
+              <span
+                class="w-2 h-2 rounded-full mr-1.5"
+                [ngClass]="user.active ? 'bg-green-500' : 'bg-red-500'"
+              ></span>
+              {{ user.active ? "Ativo" : "Inativo" }}
+            </span>
+          </div>
+
+          <div class="text-xs text-gray-400 mt-3">
+            <span> {{ user.createdAt | date : "dd/MM/yyyy" }}</span>
+          </div>
+        </div>
+
+        <div
+          class="border-t border-gray-200 bg-gray-50 px-4 py-2 flex justify-end items-center"
+        >
+          <app-button
+            (click)="editUser(user.id)"
+            className="text-sm bg-transparent hover:bg-gray-100 !text-gray-700"
+          >
+            <app-icon icon="edit" />
+            Editar
+          </app-button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      *ngIf="pagination && pagination.totalItems > pagination.size"
+      class="mt-8 flex justify-center items-center space-x-2"
+    >
+      <app-button
+        (click)="goToPage(currentPage - 1)"
+        [disabled]="!pagination.hasPrevious || loading"
+        className="bg-white !text-gray-700 border border-gray-300 hover:bg-gray-100 py-1 px-3 text-sm disabled:bg-gray-100"
+      >
+        <span class="material-icons-outlined text-base">chevron_left</span>
+      </app-button>
+
+      <span class="text-sm text-gray-600 font-medium">
+        Página {{ currentPage + 1 }} de {{ totalPages }}
+        <span class="text-gray-400 font-normal hidden sm:inline">
+          ({{ pagination.totalItems }} usuários)</span
+        >
+      </span>
+
+      <app-button
+        (click)="goToPage(currentPage + 1)"
+        [disabled]="!pagination.hasNext || loading"
+        className="bg-white !text-gray-700 border border-gray-300 hover:bg-gray-100 py-1 px-3 text-sm disabled:bg-gray-100"
+      >
+        <span class="material-icons-outlined">chevron_right</span>
+      </app-button>
+    </div>
+  </div>
+</div>

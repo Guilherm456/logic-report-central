@@ -9,24 +9,25 @@ import { SpinnerComponent } from './spinner.component';
     [type]="type"
     [disabled]="disabled || loading"
     class="
-    inline-flex items-center justify-center gap-2
-    bg-brand hover:bg-brand-light text-white font-bold py-2 px-4 rounded 
-    focus:outline-none focus:shadow-outline
-    hover:transition-colors hover:duration-300 hover:ease-in-out
-    cursor-pointer
-    disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
-    {{ loading ? 'cursor-wait' : '' }}
-    {{ class }}
-  "
+  inline-flex items-center justify-center gap-2
+  h-10 px-3
+  bg-brand hover:bg-brand-light text-white font-bold rounded-md
+  focus:outline-none focus:shadow-outline
+  hover:transition-colors hover:duration-300 hover:ease-in-out
+  cursor-pointer
+  disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
+  {{ loading ? 'cursor-wait' : '' }}
+  {{ className }}
+ "
   >
     <ng-container *ngIf="loading">
       <app-spinner />
     </ng-container>
 
-    <span *ngIf="!loading">
+    <ng-container *ngIf="!loading">
       {{ label }}
       <ng-content></ng-content>
-    </span>
+    </ng-container>
   </button>`,
 })
 export class ButtonComponent {
@@ -34,5 +35,5 @@ export class ButtonComponent {
   @Input() type: 'button' | 'submit' = 'button';
   @Input() disabled: boolean = false;
   @Input() loading: boolean = false;
-  @Input() class: string = '';
+  @Input() className: string = '';
 }
