@@ -1,6 +1,6 @@
 package com.logic.report_central.models.entities;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.logic.report_central.models.enums.Gender;
 import com.logic.report_central.models.enums.StatusEnum;
@@ -27,7 +27,7 @@ public class Report {
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "CHAR(1)")
     @JsonSerialize(using = StatusEnumSerializer.class)
-    @JsonAlias("active")
+    @JsonProperty("active")
     private StatusEnum status;
 
     @NonNull

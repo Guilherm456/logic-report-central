@@ -4,10 +4,7 @@ import com.logic.report_central.dtos.Auth.AuthDTO;
 import com.logic.report_central.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -18,10 +15,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthDTO request) {
-        try {
-            return ResponseEntity.ok(authService.authenticate(request));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
-        }
+        return ResponseEntity.ok(authService.authenticate(request));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getUserFromToken(@RequestHeader("Authorization") String token) {
+        String tokenWithoutBearer = token.replace("Bearer ", "");
+        return ResponseEntity.ok(authService.getUserFromToken(tokenWithoutBearer));
     }
 }

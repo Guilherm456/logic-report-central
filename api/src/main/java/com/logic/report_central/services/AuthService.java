@@ -34,4 +34,13 @@ public class AuthService {
 
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "E-mail ou senha inválidos");
     }
+
+    public User getUserFromToken(String token) {
+        try {
+            String email = jwtUtil.getUsernameFromToken(token);
+            return userRepository.findByEmail(email);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token inválido");
+        }
+    }
 }
