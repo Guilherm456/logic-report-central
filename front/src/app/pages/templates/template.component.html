@@ -78,8 +78,14 @@
             </span>
           </div>
 
-          <div class="text-xs text-gray-400 mt-3">
-            <span> {{ template.createdAt | date : "dd/MM/yyyy" }}</span>
+          <div class="flex flex-col mt-3">
+            <span class="text-xs text-gray-400"
+              >Criado em: {{ template.createdAt | date : "dd/MM/yyyy" }}</span
+            >
+            <span *ngIf="template.updatedAt" class="text-xs text-gray-400"
+              >Atualizado em:
+              {{ template.updatedAt | date : "dd/MM/yyyy" }}</span
+            >
           </div>
         </div>
 

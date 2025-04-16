@@ -1,7 +1,7 @@
 import { api } from '@/utils/api';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UiModule } from '@components/ui.module';
 import { ToastService } from '@services/components/toast.service';
@@ -22,7 +22,8 @@ export class LoginComponent {
     private toastService: ToastService
   ) {}
 
-  async onSubmit(loginForm: NgForm): Promise<void> {
+  async onSubmit(): Promise<void> {
+    this.loading = true;
     const credentials = {
       email: this.email,
       password: this.password,

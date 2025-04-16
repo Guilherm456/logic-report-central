@@ -9,9 +9,12 @@ import {
 } from '@angular/core'; // Adicionar ViewChild, ElementRef
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { deleteReport } from '@api_methods/report/delete';
 import { listReports } from '@api_methods/report/list';
+import { ConfirmDeleteModalComponent } from '@components/shared/confirmation-modal.component';
 import { UiModule } from '@components/ui.module';
 import { PaginationResponse, Report } from '@models';
+import { ModalService } from '@services/components/modal.service';
 import { ToastService } from '@services/components/toast.service';
 import { UserService } from '@services/user.service';
 import { Observable, Subject, Subscription, from, of } from 'rxjs';
@@ -47,7 +50,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
     private router: Router,
     private toastService: ToastService,
     private cdr: ChangeDetectorRef,
-    public userService: UserService
+    public userService: UserService,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -108,11 +112,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   goToPage(page: number): void {
-    if (
-      !this.loading &&
-      page >= 0 &&
-      (!this.pagination || page < this.totalPages)
-    ) {
+    if (page >= 0 && (!this.pagination || page < this.totalPages)) {
       this.loading = true;
       this.currentPage = page;
       this.cdr.markForCheck();
@@ -122,6 +122,41 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.searchTerm
       ).subscribe();
     }
+  }
+
+  confirmDeleteReport(reportId: number): void {
+    this.modalService
+      .showModal({
+        component: ConfirmDeleteModalComponent,
+        data: {
+          message: `Tem certeza que deseja apagar o laudo?`,
+          confirmButtonText: 'Apagar',
+          cancelButtonText: 'Cancelar',
+        },
+      })
+      .subscribe((result) => {
+        if (result) this.onDeleteReport(reportId);
+      });
+  }
+
+  async onDeleteReport(reportId: number) {
+    this.loading = true;
+
+    try {
+      await deleteReport({ id: reportId });
+      this.toastService.showToast({
+        message: 'Laudo apagado com sucesso!',
+        type: 'success',
+      });
+
+      this.goToPage(0);
+    } catch (e) {
+      this.toastService.showToast({
+        message: 'Falha ao apagar o laudo. Tente novamente.',
+        type: 'error',
+      });
+    }
+    this.loading = false;
   }
 
   editReport(id: number): void {

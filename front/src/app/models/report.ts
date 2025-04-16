@@ -11,6 +11,7 @@ export type Report = {
   content: string;
 
   doctorRequest: Doctor;
+  doctor: Doctor;
 
   createdAt: string;
   updatedAt: string;

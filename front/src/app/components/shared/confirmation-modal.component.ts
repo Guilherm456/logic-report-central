@@ -1,53 +1,44 @@
-import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ModalService } from '@services/components/modal.service';
 
 @Component({
-  selector: 'app-confirmation-modal',
-  imports: [NgIf],
+  selector: 'app-confirm-delete-modal',
   template: `
-    <div class="pb-2 border-b border-gray-300 mb-4">
-      <h2 *ngIf="title" class="text-xl font-semibold">{{ title }}</h2>
-    </div>
-    <div class="mb-6">
-      <p *ngIf="message">{{ message }}</p>
-    </div>
-    <div class="flex justify-end gap-2">
-      <button
-        type="button"
-        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-        (click)="onCancel()"
-      >
-        {{ cancelButtonLabel || 'Cancelar' }}
-      </button>
-      <button
-        type="button"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        (click)="onConfirm()"
-      >
-        {{ confirmButtonLabel || 'Confirmar' }}
-      </button>
+    <div class="bg-white rounded-md shadow-lg p-6">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ message }}</h2>
+      <div class="flex justify-end gap-2">
+        <button
+          type="button"
+          class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
+          (click)="onCancel()"
+        >
+          {{ cancelButtonText }}
+        </button>
+        <button
+          type="button"
+          class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
+          (click)="onConfirm()"
+        >
+          {{ confirmButtonText }}
+        </button>
+      </div>
     </div>
   `,
 })
-export class ConfirmationModalComponent {
-  @Input() title?: string;
-  @Input() message?: string;
-  @Input() confirmButtonLabel?: string;
-  @Input() cancelButtonLabel?: string;
+export class ConfirmDeleteModalComponent {
+  @Input() message: string = 'Tem certeza que deseja apagar este item?';
+  @Input() confirmButtonText: string = 'Sim';
+  @Input() cancelButtonText: string = 'Não';
+  @Output() confirmed = new EventEmitter<boolean>();
 
-  @Output() confirmed = new EventEmitter<void>();
-  @Output() cancelled = new EventEmitter<void>();
-
-  constructor(private modalService: ModalService) {}
+  closeModal: (result?: any) => void = () => {};
 
   onConfirm(): void {
-    this.confirmed.emit();
-    this.modalService.closeModal();
+    this.confirmed.emit(true);
+    this.closeModal(true);
   }
 
   onCancel(): void {
-    this.cancelled.emit();
-    this.modalService.closeModal();
+    this.confirmed.emit(false);
+    this.closeModal(false);
   }
 }

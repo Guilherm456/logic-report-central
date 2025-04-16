@@ -1,23 +1,15 @@
 package com.logic.report_central.repositories;
 
 import com.logic.report_central.models.entities.Report;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.logic.report_central.models.enums.StatusEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface ReportRepository extends JpaRepository<Report, Long> {
+import java.util.Optional;
 
+public interface ReportRepository extends JpaRepository<Report, Long>, JpaSpecificationExecutor<Report> {
 
-    @Query("""
-            SELECT r FROM Report r
-            WHERE LOWER(r.patientName) LIKE %:searchTerm%
-            OR LOWER(r.content) LIKE %:searchTerm%
-            OR LOWER(r.doctor.name) LIKE %:searchTerm%
-            OR LOWER(r.doctorRequest.name) LIKE %:searchTerm%
-            """)
-    Page<Report> findAllBySearch(@Param("searchTerm") String searchTerm, Pageable pageable);
+    Optional<Report> findByIdAndStatusNot(Long id, StatusEnum status);
 
 
 }

@@ -38,4 +38,9 @@ public class ReportController {
         return ResponseEntity.ok(reportService.updateReport(id, reportDTO));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Report> deleteReport(@PathVariable Long id) {
+        return ResponseEntity.ok(reportService.deleteReport(id));
+    }
+
 }

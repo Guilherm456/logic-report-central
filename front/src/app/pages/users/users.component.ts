@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { UiModule } from '@components/ui.module';
 import { PaginationResponse, User } from '@models';
+import { ModalService } from '@services/components/modal.service';
 import { ToastService } from '@services/components/toast.service';
 import { Observable, Subject, Subscription, from, of } from 'rxjs';
 import {
@@ -45,7 +46,8 @@ export class UsersComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private toastService: ToastService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -129,6 +131,8 @@ export class UsersComponent implements OnInit, OnDestroy {
   createUser(): void {
     this.router.navigate(['/users/new']);
   }
+
+  onConfirmDelete(userId: number): void {}
 
   clearSearch(): void {
     this.searchTerm = '';

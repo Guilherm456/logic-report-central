@@ -80,8 +80,13 @@
             </span>
           </div>
 
-          <div class="text-xs text-gray-400 mt-3">
-            <span> {{ doctor.createdAt | date : "dd/MM/yyyy" }}</span>
+          <div class="flex flex-col mt-3">
+            <span class="text-xs text-gray-400"
+              >Criado em: {{ doctor.createdAt | date : "dd/MM/yyyy" }}</span
+            >
+            <span *ngIf="doctor.updatedAt" class="text-xs text-gray-400"
+              >Atualizado em: {{ doctor.updatedAt | date : "dd/MM/yyyy" }}</span
+            >
           </div>
         </div>
 

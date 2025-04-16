@@ -9,10 +9,12 @@ import com.logic.report_central.models.enums.StatusEnum;
 import com.logic.report_central.repositories.DoctorRepository;
 import com.logic.report_central.repositories.ReportRepository;
 import com.logic.report_central.repositories.UserRepository;
+import com.logic.report_central.repositories.specifications.ReportSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -83,11 +85,8 @@ public class ReportService {
         if (doctor.getStatus().equals(StatusEnum.D))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico não encontrado");
 
-        Report report = reportRepository.findById(id)
+        Report report = reportRepository.findByIdAndStatusNot(id, StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Laudo não encontrado"));
-
-        if (report.getStatus().equals(StatusEnum.D))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Laudo não encontrado");
 
         if (report.getDoctor().getStatus().equals(StatusEnum.D))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Médico solicitante não encontrado");
@@ -123,10 +122,14 @@ public class ReportService {
 
     public Page<Report> getReports(int page, int size, String search) {
         Pageable pageable = PageRequest.of(page, size);
+        Specification<Report> spec = Specification.where(null);
         try {
             if (search != null && !search.isEmpty())
-                return reportRepository.findAllBySearch(search, pageable);
-            return reportRepository.findAll(pageable);
+                spec = spec.and(ReportSpecification.findAllBySearch(search));
+
+            spec = spec.and(ReportSpecification.statusNot(StatusEnum.D));
+
+            return reportRepository.findAll(spec, pageable);
         } catch (Exception e) {
             logger.severe("Erro ao buscar Laudos: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao buscar Laudos");
@@ -134,15 +137,13 @@ public class ReportService {
     }
 
     public Report getReportById(Long id) {
-        return reportRepository.findById(id)
+        return reportRepository.findByIdAndStatusNot(id, StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Laudo não encontrado"));
     }
 
-    public Report deleteReportById(Long id) {
-        Report report = reportRepository.findById(id)
+    public Report deleteReport(Long id) {
+        Report report = reportRepository.findByIdAndStatusNot(id, StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Laudo não encontrado"));
-        if (report.getStatus().equals(StatusEnum.D))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Laudo não encontrado");
 
         try {
             report.setStatus(StatusEnum.D);
@@ -151,4 +152,5 @@ public class ReportService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao deletar Laudo");
         }
     }
+
 }

@@ -17,6 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @Service
 public class TemplateService {
 
@@ -79,13 +81,15 @@ public class TemplateService {
 
         if (user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
 
-        Doctor doctor = user.doctorLinked()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário logado não está vinculado a um médico ativo"));
+        Optional<Doctor> doctor = user.doctorLinked();
+
+        if (doctor.isEmpty()) return Page.empty();
+
 
         Pageable pageable = PageRequest.of(page, size);
         String searchTermLower = (search != null && !search.trim().isEmpty()) ? search.toLowerCase() : "";
 
-        return templateRepository.findActiveByDoctorIdAndOptionalSearchTerm(doctor.getId(), searchTermLower, pageable);
+        return templateRepository.findActiveByDoctorIdAndOptionalSearchTerm(doctor.get().getId(), searchTermLower, pageable);
 
     }
 

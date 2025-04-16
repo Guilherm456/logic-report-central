@@ -23,7 +23,7 @@
         </app-input>
       </div>
       <app-button
-        (click)="createReport()"
+        (onClick)="createReport()"
         [disabled]="userService.getCurrentUser()?.doctor_linked?.type !== 'E'"
         id="create-report-button"
       >
@@ -79,8 +79,34 @@
             </span>
           </div>
 
-          <div class="text-xs text-gray-400 mt-3">
-            <span> {{ report.createdAt | date : "dd/MM/yyyy" }}</span>
+          <div class="text-sm text-gray-600 mb-1">
+            Paciente:
+            <span class="font-semibold">{{ report.patientName }}</span>
+          </div>
+          <div class="text-sm text-gray-600 mb-1">
+            Sexo:
+            <span class="font-semibold">{{
+              report.patientGender === "M"
+                ? "Masculino"
+                : report.patientGender === "F"
+                ? "Feminino"
+                : "Outro"
+            }}</span>
+          </div>
+          <div class="text-sm text-gray-600 mb-3">
+            Data de Nascimento:
+            <span class="font-semibold">{{
+              report.patientBirthDate | date : "dd/MM/yyyy"
+            }}</span>
+          </div>
+
+          <div class="flex flex-col mt-3">
+            <span class="text-xs text-gray-400"
+              >Criado em: {{ report.createdAt | date : "dd/MM/yyyy" }}</span
+            >
+            <span *ngIf="report.updatedAt" class="text-xs text-gray-400"
+              >Atualizado em: {{ report.updatedAt | date : "dd/MM/yyyy" }}</span
+            >
           </div>
         </div>
 
@@ -88,8 +114,20 @@
           class="border-t border-gray-200 bg-gray-50 px-4 py-2 flex justify-end items-center"
         >
           <app-button
-            (click)="editReport(report.id)"
+            (onClick)="confirmDeleteReport(report.id)"
+            className="text-sm bg-transparent hover:bg-gray-100 !text-red-700"
+          >
+            <app-icon icon="delete" />
+            Excluir
+          </app-button>
+
+          <app-button
+            (onClick)="editReport(report.id)"
             className="text-sm bg-transparent hover:bg-gray-100 !text-gray-700"
+            [disabled]="
+              userService.getCurrentUser()?.doctor_linked?.id !==
+              report.doctor.id
+            "
           >
             <app-icon icon="edit" />
             Editar
@@ -103,7 +141,7 @@
       class="mt-8 flex justify-center items-center gap-2"
     >
       <app-button
-        (click)="goToPage(currentPage - 1)"
+        (onClick)="goToPage(currentPage - 1)"
         [disabled]="!pagination.hasPrevious || loading"
         className="bg-white !text-gray-700 border border-gray-300 hover:bg-gray-100 py-1 px-3 text-sm disabled:bg-gray-100"
       >
@@ -118,7 +156,7 @@
       </span>
 
       <app-button
-        (click)="goToPage(currentPage + 1)"
+        (onClick)="goToPage(currentPage + 1)"
         [disabled]="!pagination.hasNext || loading"
         className="bg-white !text-gray-700 border border-gray-300 hover:bg-gray-100 py-1 px-3 text-sm disabled:bg-gray-100"
       >
