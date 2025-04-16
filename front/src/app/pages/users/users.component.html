@@ -23,7 +23,7 @@
         >
         </app-input>
       </div>
-      <app-button (click)="createUser()">
+      <app-button (click)="createUser()" id="create-user-button">
         <span class="material-icons-outlined text-base mr-1">add</span>
         <span class="hidden md:block"> Criar Usuário </span>
       </app-button>
@@ -37,8 +37,9 @@
 
   <div *ngIf="!loading">
     <div
+      id="no-users-message"
       *ngIf="users.length === 0"
-      class="text-center text-gray-500 py-16 bg-white rounded-lg shadow border border-gray-200 w-max px-8 mx-auto"
+      class="text-center text-gray-500 py-16 bg-white rounded-lg shadow border border-gray-200 md:w-max px-8 md:mx-auto"
     >
       <span class="material-icons-outlined text-5xl text-gray-400 mb-2"
         >search_off</span
@@ -101,6 +102,7 @@
           <app-button
             (onClick)="editUser(user.id)"
             className="text-sm bg-transparent hover:bg-gray-100 !text-gray-700"
+            id="edit-user-{{ user.id }}-button"
           >
             <app-icon icon="edit" />
             Editar
@@ -114,9 +116,10 @@
       class="mt-8 flex justify-center items-center gap-2"
     >
       <app-button
-        (click)="goToPage(currentPage - 1)"
+        (onClick)="goToPage(currentPage - 1)"
         [disabled]="!pagination.hasPrevious || loading"
         className="bg-white !text-gray-700 border border-gray-300 hover:bg-gray-100 py-1 px-3 text-sm disabled:bg-gray-100"
+        id="previous-page-button"
       >
         <span class="material-icons-outlined text-base">chevron_left</span>
       </app-button>
@@ -129,9 +132,10 @@
       </span>
 
       <app-button
-        (click)="goToPage(currentPage + 1)"
+        (onClick)="goToPage(currentPage + 1)"
         [disabled]="!pagination.hasNext || loading"
         className="bg-white !text-gray-700 border border-gray-300 hover:bg-gray-100 py-1 px-3 text-sm disabled:bg-gray-100"
+        id="next-page-button"
       >
         <span class="material-icons-outlined">chevron_right</span>
       </app-button>

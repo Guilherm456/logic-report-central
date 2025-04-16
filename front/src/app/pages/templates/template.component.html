@@ -37,7 +37,8 @@
   <div *ngIf="!loading">
     <div
       *ngIf="templates.length === 0"
-      class="text-center text-gray-500 py-16 bg-white rounded-lg shadow border border-gray-200 w-max px-8 mx-auto"
+      id="no-templates-message"
+      class="text-center text-gray-500 py-16 bg-white rounded-lg shadow border border-gray-200 md:w-max px-8 md:mx-auto"
     >
       <span class="material-icons-outlined text-5xl text-gray-400 mb-2"
         >search_off</span
@@ -51,6 +52,7 @@
     >
       <div
         *ngFor="let template of templates"
+        id="template-card-{{ template.id }}"
         class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden flex flex-col"
       >
         <div class="p-4 flex-grow">
@@ -105,6 +107,7 @@
           <app-button
             (onClick)="editTemplate(template.id)"
             className="text-sm bg-transparent hover:bg-gray-100 !text-gray-700"
+            id="edit-template-button-{{ template.id }}"
           >
             <app-icon icon="edit" />
             Editar

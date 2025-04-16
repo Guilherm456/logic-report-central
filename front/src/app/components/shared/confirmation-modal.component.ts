@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { UiModule } from '../ui.module';
 
 @Component({
   selector: 'app-confirm-delete-modal',
@@ -6,23 +7,26 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
     <div class="bg-white rounded-md shadow-lg p-6">
       <h2 class="text-lg font-semibold text-gray-800 mb-4">{{ message }}</h2>
       <div class="flex justify-end gap-2">
-        <button
+        <app-button
           type="button"
-          class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
-          (click)="onCancel()"
+          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 !text-gray-700 "
+          (onClick)="onCancel()"
+          id="cancel-button"
         >
           {{ cancelButtonText }}
-        </button>
-        <button
+        </app-button>
+        <app-button
           type="button"
-          class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
-          (click)="onConfirm()"
+          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white "
+          (onClick)="onConfirm()"
+          id="confirm-button"
         >
           {{ confirmButtonText }}
-        </button>
+        </app-button>
       </div>
     </div>
   `,
+  imports: [UiModule],
 })
 export class ConfirmDeleteModalComponent {
   @Input() message: string = 'Tem certeza que deseja apagar este item?';

@@ -16,6 +16,7 @@ import { SpinnerComponent } from './spinner.component';
  hover:transition-colors hover:duration-300 hover:ease-in-out
  cursor-pointer
  disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
+ focus:ring-2 focus:ring-offset-2 focus:ring-brand focus:ring-offset-white
  {{ loading ? 'cursor-wait' : '' }}
  {{ className }}
 "

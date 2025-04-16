@@ -37,7 +37,8 @@
   <div *ngIf="!loading">
     <div
       *ngIf="doctors.length === 0"
-      class="text-center text-gray-500 py-16 bg-white rounded-lg shadow border border-gray-200 w-max px-8 mx-auto"
+      id="no-doctors-message"
+      class="text-center text-gray-500 py-16 bg-white rounded-lg shadow border border-gray-200 md:w-max px-8 md:mx-auto"
     >
       <span class="material-icons-outlined text-5xl text-gray-400 mb-2"
         >search_off</span
@@ -52,6 +53,7 @@
       <div
         *ngFor="let doctor of doctors"
         class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden flex flex-col"
+        id="doctor-card-{{ doctor.id }}"
       >
         <div class="p-4 flex-grow">
           <div class="flex justify-between items-start mb-2">
@@ -103,8 +105,9 @@
           </app-button>
 
           <app-button
-            (click)="editUser(doctor.id)"
+            (onClick)="editUser(doctor.id)"
             className="text-sm bg-transparent hover:bg-gray-100 !text-gray-700"
+            id="edit-doctor-{{ doctor.id }}-button"
           >
             <app-icon icon="edit" />
             Editar

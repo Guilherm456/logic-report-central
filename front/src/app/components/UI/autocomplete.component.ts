@@ -37,7 +37,6 @@ import { SpinnerComponent } from './spinner.component';
         (input)="onInputChange($event)"
         (blur)="handleBlur()"
         (focus)="onFocus()"
-        (keydown)="onKeyDown($event)"
         [errorMessage]="errorMessage"
         className="pr-8"
         aria-autocomplete="list"
@@ -167,6 +166,9 @@ import { SpinnerComponent } from './spinner.component';
       multi: true,
     },
   ],
+  host: {
+    '[attr.id]': 'null',
+  },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AutocompleteComponent<T = any>
@@ -314,35 +316,6 @@ export class AutocompleteComponent<T = any>
   }
   handleBlur(): void {
     this.onTouchedCallback();
-    this.cdr.detectChanges();
-  }
-
-  onKeyDown(event: KeyboardEvent): void {
-    if (!this.isOpen) return;
-
-    switch (event.key) {
-      case 'ArrowDown':
-        event.preventDefault();
-        this.highlightIndex = Math.min(
-          this.highlightIndex + 1,
-          this.filteredOptions.length - 1
-        );
-        break;
-      case 'ArrowUp':
-        event.preventDefault();
-        this.highlightIndex = Math.max(this.highlightIndex - 1, -1);
-        break;
-      case 'Enter':
-        event.preventDefault();
-        if (this.highlightIndex >= 0) {
-          this.selectOption(this.filteredOptions[this.highlightIndex]);
-        }
-        break;
-      case 'Escape':
-        this.isOpen = false;
-        this.resetHighlight();
-        break;
-    }
     this.cdr.detectChanges();
   }
 

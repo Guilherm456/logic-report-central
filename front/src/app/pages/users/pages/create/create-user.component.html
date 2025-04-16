@@ -14,6 +14,7 @@
       placeholder="Nome completo"
       formControlName="username"
       [errorMessage]="formService.getFormErrorMessage(userForm.get('username'))"
+      id="username-input"
     ></app-input>
 
     <app-input
@@ -22,6 +23,7 @@
       type="email"
       formControlName="email"
       [errorMessage]="formService.getFormErrorMessage(userForm.get('email'))"
+      id="email-input"
     ></app-input>
 
     <app-input
@@ -31,6 +33,7 @@
       type="password"
       formControlName="password"
       [errorMessage]="formService.getFormErrorMessage(userForm.get('password'))"
+      id="password-input"
     ></app-input>
   </app-form-card>
 </form>

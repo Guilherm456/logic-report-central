@@ -22,7 +22,7 @@
     <app-button
       type="button"
       className="bg-gray-100 hover:bg-gray-200 !text-gray-700"
-      (click)="handleCancel.emit()"
+      (onClick)="handleCancel.emit()"
       [disabled]="loading"
       id="cancel-button"
     >
@@ -32,8 +32,8 @@
     <app-button
       type="submit"
       [loading]="loading"
+      (onClick)="handleSave.emit()"
       id="submit-button"
-      (click)="handleSave.emit()"
     >
       <span class="material-icons-outlined text-base mr-1">save</span>
       {{ submitText }}
