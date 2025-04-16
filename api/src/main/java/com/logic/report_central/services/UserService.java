@@ -51,6 +51,8 @@ public class UserService {
         User user = userRepository.findByIdAndStatusNot(id, StatusEnum.D)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
+        if (user.getEmail().equals("admin@example.com"))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário administrador não pode ser deletado");
 
         if (userRepository.findByEmail(userUpdateDTO.getEmail()) != null && !user.getEmail().equals(userUpdateDTO.getEmail()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail já cadastrado");
@@ -86,7 +88,11 @@ public class UserService {
     }
 
     public User deleteUser(Long id) {
+
         User user = userRepository.findByIdAndStatusNot(id, StatusEnum.D).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
+        if (user.getEmail().equals("admin@example.com"))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário administrador não pode ser deletado");
 
         if (user.getDoctors() != null && !user.getDoctors().isEmpty() && user.getDoctors().getFirst().getStatus() != StatusEnum.D)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário não pode ser deletado, pois está associado a um médico");
