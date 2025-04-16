@@ -1,7 +1,9 @@
-import { NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { User } from '@models';
 import { UserService } from '@services/user.service';
+import { Observable } from 'rxjs';
 
 interface MenuItem {
   label: string;
@@ -12,7 +14,7 @@ interface MenuItem {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterModule, NgIf, NgFor],
+  imports: [RouterModule, NgIf, NgFor, AsyncPipe],
   template: `<nav
       [class]="isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
       class="fixed md:sticky top-0 left-0 h-screen w-64 bg-gray-50 border-r border-gray-200 flex flex-col z-50 transform transition-transform duration-300 ease-in-out"
@@ -54,9 +56,11 @@ interface MenuItem {
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-sm font-semibold text-gray-900 truncate">
-              {{ getUser()?.username }}
+              {{ (user$ | async)?.name ?? '-' }}
             </p>
-            <p class="text-xs text-gray-500 truncate">{{ getUser()?.email }}</p>
+            <p class="text-xs text-gray-500 truncate">
+              {{ (user$ | async)?.email ?? '-' }}
+            </p>
           </div>
           <button
             (click)="logout()"
@@ -89,7 +93,11 @@ interface MenuItem {
     ></div>`,
 })
 export class SidebarComponent {
-  constructor(private userService: UserService) {}
+  user$: Observable<User | null>;
+
+  constructor(private userService: UserService) {
+    this.user$ = this.userService.user$;
+  }
 
   isOpen = false;
 

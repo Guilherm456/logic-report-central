@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { UiModule } from '@components/ui.module';
 import { FormService } from '@services/components/form.service';
 import { ToastService } from '@services/components/toast.service';
+import { UserService } from '@services/user.service';
 import Cookies from 'js-cookie';
 
 @Component({
@@ -27,7 +28,8 @@ export class LoginComponent {
     private router: Router,
     private fb: FormBuilder,
     private toastService: ToastService,
-    public formService: FormService
+    public formService: FormService,
+    private userService: UserService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.email, Validators.required]],
@@ -63,6 +65,8 @@ export class LoginComponent {
 
       if (token) {
         Cookies.set('token', token);
+
+        this.userService.fetchUserData().subscribe();
 
         this.router.navigate(['/users']);
       }
