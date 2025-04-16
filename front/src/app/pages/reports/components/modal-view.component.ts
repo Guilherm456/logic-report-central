@@ -47,7 +47,9 @@ import { Report } from '@models';
 
       <div class="flex justify-between items-center mt-6">
         <div class="text-sm text-gray-500">
-          <p>Criado em: {{ report!.createdAt | date : 'dd/MM/yyyy HH:mm' }}</p>
+          <p>
+            Data do laudo: {{ report!.createdAt | date : 'dd/MM/yyyy HH:mm' }}
+          </p>
           <p *ngIf="report!.updatedAt">
             Última atualização:
             {{ report!.updatedAt | date : 'dd/MM/yyyy HH:mm' }}
@@ -58,6 +60,7 @@ import { Report } from '@models';
           <app-button
             (onClick)="closeModal()"
             className="bg-gray-100 !text-gray-800 hover:bg-gray-200"
+            id="close-button"
           >
             Fechar
           </app-button>
