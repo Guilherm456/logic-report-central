@@ -84,7 +84,7 @@
       [errorMessage]="
         formService.getFormErrorMessage(reportForm.get('content'))
       "
-      [disabled]="reportForm.get('selectedTemplate')?.value"
+      (input)="onContentChange()"
       id="report-content"
     ></app-textarea>
   </app-form-card>

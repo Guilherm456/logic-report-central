@@ -279,6 +279,11 @@ export class CreateReportComponent implements OnInit {
     });
   }
 
+  onContentChange() {
+    if (this.reportForm.get('selectedTemplate')?.value)
+      this.reportForm.patchValue({ selectedTemplate: null });
+  }
+
   clearTemplate() {
     this.reportForm.patchValue({ selectedTemplate: null });
     this.reportForm.get('content')?.enable();
