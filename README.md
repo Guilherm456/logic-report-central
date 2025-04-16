@@ -1,6 +1,6 @@
 # Report Central - Sistema de Gerenciamento de Laudos Médicos
 
-Sistema para gestão de usuários, médicos e laudos médicos com autenticação segura e interface moderna.
+Sistema para gestão de usuários, médicos e laudos médicos com autenticação.
 
 ## 🚀 Funcionalidades Principais
 
@@ -52,7 +52,7 @@ Sistema para gestão de usuários, médicos e laudos médicos com autenticação
 1. **Pré-requisitos**
 
 ```bash
-- Java 17 JDK
+- Java 21 JDK
 - Node.js 18+
 - Docker (ou PostgreSQL local)
 ```
@@ -80,6 +80,8 @@ npm install
 mvn spring-boot:run
 ```
 
+O Hibernate irá criar o banco de dados e as tabelas automaticamente. Também será criado um usuário administrador nativo com login `admin@example.com` e senha `admin123`.
+
 **Frontend (Porta 4200):**
 
 ```bash
@@ -90,7 +92,7 @@ Acesse a aplicação em: `http://localhost:4200`
 
 ## 📚 Documentação da API
 
-Acesse a documentação interativa após iniciar o backend:
+Acesse a documentação após iniciar o back-end:
 
 ```http
 http://localhost:8085/swagger-ui.html
