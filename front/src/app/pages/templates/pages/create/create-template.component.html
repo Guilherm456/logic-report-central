@@ -7,6 +7,7 @@
         : 'Preencha os campos abaixo para criar um novo template'
     "
     [loading]="submitting || loading"
+    [loadingData]="loading"
     (handleSave)="onSubmit()"
     (handleCancel)="cancel()"
     cancelText="Voltar"

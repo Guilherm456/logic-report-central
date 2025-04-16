@@ -2,7 +2,8 @@
   <app-form-card
     header="Criar Novo Usuário"
     description="Preencha os campos abaixo para criar um novo usuário"
-    [loading]="submitting"
+    [loading]="submitting || loading"
+    [loadingData]="loading"
     (handleSave)="onSubmit()"
     (handleCancel)="cancel()"
     cancelText="Voltar"

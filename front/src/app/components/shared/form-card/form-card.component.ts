@@ -19,4 +19,5 @@ export class FormCardComponent {
   @Input() description: string = '';
 
   @Input() loading: boolean = false;
+  @Input() loadingData: boolean = false;
 }
