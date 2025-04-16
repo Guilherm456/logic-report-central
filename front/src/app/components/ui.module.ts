@@ -3,6 +3,7 @@ import { AutocompleteComponent } from './UI/autocomplete.component';
 import { ButtonComponent } from './UI/button.component';
 import { IconComponent } from './UI/icon.component';
 import { InputComponent } from './UI/input.component';
+import { ModalContainerComponent } from './UI/modal.component';
 import { SpinnerComponent } from './UI/spinner.component';
 import { TextareaComponent } from './UI/textarea.component';
 
@@ -14,6 +15,7 @@ import { TextareaComponent } from './UI/textarea.component';
     SpinnerComponent,
     IconComponent,
     AutocompleteComponent,
+    ModalContainerComponent,
   ],
   exports: [
     ButtonComponent,
@@ -22,6 +24,7 @@ import { TextareaComponent } from './UI/textarea.component';
     IconComponent,
     TextareaComponent,
     AutocompleteComponent,
+    ModalContainerComponent,
   ],
 })
 export class UiModule {}
