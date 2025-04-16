@@ -68,7 +68,7 @@
       [loading]="loadingTemplates"
       [hasMore]="hasMoreTemplates"
       (onMore)="onLoadMoreTemplates()"
-      (onSearch)="onSearchTemplate()"
+      (onSearch)="onSearchTemplate($event)"
       (onSelect)="onTemplateSelected($event)"
       (onClear)="clearTemplate()"
       *ngIf="!isEditMode"

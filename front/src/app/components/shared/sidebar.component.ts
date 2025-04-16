@@ -34,6 +34,7 @@ interface MenuItem {
           <a
             [routerLink]="item.routerLink"
             routerLinkActive="bg-brand-50 text-brand border-l-4 border-brand"
+            (click)="toggleSidebar()"
             class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 transition-colors duration-200"
           >
             <span class="material-icons-outlined text-lg">{{ item.icon }}</span>
@@ -42,7 +43,7 @@ interface MenuItem {
         </li>
       </ul>
 
-      <div class="p-4 mt-auto border-t border-gray-200">
+      <div class="p-4.5 mt-auto border-t border-gray-200">
         <div class="flex items-center gap-3">
           <div
             class="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center"

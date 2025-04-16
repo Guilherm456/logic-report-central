@@ -168,7 +168,7 @@ export class CreateTemplateComponent implements OnInit {
     }
   }
 
-  onSearchDoctor(query: string = '') {
+  onSearchDoctor(query?: string) {
     this.searchDoctors(query, 0);
   }
 
@@ -188,7 +188,6 @@ export class CreateTemplateComponent implements OnInit {
 
     this.submitting = true;
     this.cdr.markForCheck();
-    console.debug(this.templateForm.value);
 
     try {
       const templateData = this.prepareData();
@@ -209,7 +208,6 @@ export class CreateTemplateComponent implements OnInit {
           error.response?.data?.message || 'Erro ao salvar dados do template',
         type: 'error',
       });
-      console.debug(error);
     }
     this.submitting = false;
     this.cdr.markForCheck();

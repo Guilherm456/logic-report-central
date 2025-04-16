@@ -61,8 +61,8 @@ export class CreateDoctorComponent implements OnInit {
   loadingCouncils = false;
   loadingUsers = false;
 
-  private searchCouncilTerm: string = '';
-  private searchUserTerm: string = '';
+  private searchCouncilTerm?: string;
+  private searchUserTerm?: string;
   private councilPage: number = 0;
   private userPage: number = 0;
   hasMoreCouncils: boolean = false;
@@ -194,7 +194,7 @@ export class CreateDoctorComponent implements OnInit {
   }
 
   async searchCouncils(
-    query: string = '',
+    query?: string,
     page: number = 0
   ): Promise<PaginationResponse<Council>> {
     this.loadingCouncils = true;
@@ -234,7 +234,7 @@ export class CreateDoctorComponent implements OnInit {
   }
 
   async searchUsers(
-    query: string = '',
+    query?: string,
     page: number = 0
   ): Promise<PaginationResponse<User>> {
     this.loadingUsers = true;
@@ -274,7 +274,7 @@ export class CreateDoctorComponent implements OnInit {
     }
   }
 
-  onSearchCouncil(query: string = '') {
+  onSearchCouncil(query?: string) {
     this.searchCouncils(query, 0);
   }
 
@@ -282,7 +282,7 @@ export class CreateDoctorComponent implements OnInit {
     this.searchCouncils(this.searchCouncilTerm, this.councilPage + 1);
   }
 
-  onSearchUser(query: string = '') {
+  onSearchUser(query?: string) {
     this.searchUsers(query, 0);
   }
 
@@ -302,7 +302,6 @@ export class CreateDoctorComponent implements OnInit {
 
     this.submitting = true;
     this.cdr.markForCheck();
-    console.debug(this.doctorForm.value);
 
     try {
       const doctorData = this.prepareData();
@@ -325,7 +324,6 @@ export class CreateDoctorComponent implements OnInit {
           error.response?.data?.message || 'Erro ao salvar dados do médico',
         type: 'error',
       });
-      console.debug(error);
     }
     this.submitting = false;
     this.cdr.markForCheck();

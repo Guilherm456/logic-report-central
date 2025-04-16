@@ -1,4 +1,4 @@
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -7,7 +7,6 @@ import {
   EventEmitter,
   forwardRef,
   HostListener,
-  Inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -203,21 +202,18 @@ export class AutocompleteComponent<T = any>
   filteredOptions: T[] = [];
   isOpen: boolean = false;
   displayValue: string = '';
+  private lastSearchTerm: string | null = null;
 
   private debouncedSearch: (value?: string) => void;
   private onTouchedCallback: () => void = () => {};
   private onChangeCallback: (value: T | null) => void = () => {};
 
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private elementRef: ElementRef,
-    @Inject(DOCUMENT) private document: Document
-  ) {
+  constructor(private cdr: ChangeDetectorRef, private elementRef: ElementRef) {
     this.debouncedSearch = debounce((value?: string) => {
-      this.onSearch.emit(value);
-      if (!this.onSearch.observers.length) {
+      if (!this.onSearch) {
         this.filterOptions(value);
       }
+      this.onSearch.emit(value);
       this.cdr.detectChanges();
     }, 300);
   }
@@ -225,7 +221,6 @@ export class AutocompleteComponent<T = any>
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['options']) {
       this.filteredOptions = [...this.options];
-      this.updateDisplayValue();
       this.resetHighlight();
       this.cdr.detectChanges();
     }
@@ -302,15 +297,21 @@ export class AutocompleteComponent<T = any>
     this.onSelect.emit(null);
     this.debouncedSearch(target.value);
     this.resetHighlight();
+    this.lastSearchTerm = target.value;
     this.cdr.detectChanges();
   }
 
   onFocus(): void {
-    this.isOpen = true;
-    this.debouncedSearch(this.displayValue);
-    this.cdr.detectChanges();
+    if (this.displayValue !== this.lastSearchTerm) {
+      this.isOpen = true;
+      this.debouncedSearch(this.displayValue);
+      this.lastSearchTerm = this.displayValue;
+      this.cdr.detectChanges();
+    } else {
+      this.isOpen = true;
+      this.cdr.detectChanges();
+    }
   }
-
   handleBlur(): void {
     this.onTouchedCallback();
     this.cdr.detectChanges();
@@ -348,6 +349,7 @@ export class AutocompleteComponent<T = any>
   selectOption(option: T): void {
     this.value = option;
     this.isOpen = false;
+    this.debouncedSearch(undefined);
     this.resetHighlight();
     this.cdr.detectChanges();
   }

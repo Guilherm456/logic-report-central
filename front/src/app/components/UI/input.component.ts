@@ -131,7 +131,6 @@ export class InputComponent implements ControlValueAccessor {
   }
 
   onTouched(): void {
-    this.onTouched();
     this.blur.emit();
   }
 

@@ -253,7 +253,7 @@ export class CreateReportComponent implements OnInit {
     }
   }
 
-  onSearchDoctor(query: string = '') {
+  onSearchDoctor(query?: string) {
     this.searchDoctors(query, 0);
   }
 
@@ -261,7 +261,7 @@ export class CreateReportComponent implements OnInit {
     this.searchDoctors(this.searchDoctorTerm, this.doctorPage + 1);
   }
 
-  onSearchTemplate(query: string = '') {
+  onSearchTemplate(query?: string) {
     this.searchTemplates(query, 0);
   }
 

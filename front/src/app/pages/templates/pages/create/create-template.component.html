@@ -44,7 +44,7 @@
       [required]="true"
       [hasMore]="hasMoreDoctors"
       (onMore)="onLoadMoreDoctors()"
-      (onSearch)="onSearchDoctor()"
+      (onSearch)="onSearchDoctor($event)"
       [displayOption]="displayDoctorOption"
       [errorMessage]="
         formService.getFormErrorMessage(templateForm.get('doctor'))
