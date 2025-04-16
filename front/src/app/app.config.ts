@@ -5,7 +5,6 @@ import {
   provideClientHydration,
   withEventReplay,
 } from '@angular/platform-browser';
-import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -13,8 +12,5 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    providePrimeNG({
-      theme: {},
-    }),
   ],
 };

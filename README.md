@@ -37,7 +37,6 @@ Sistema para gestão de usuários, médicos e laudos médicos com autenticação
 ### Frontend
 
 - Angular 19
-- PrimeNG (UI Components)
 - Tailwind CSS
 - Axios (HTTP Client)
 
