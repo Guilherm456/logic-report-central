@@ -11,7 +11,7 @@
 
     <form
       (ngSubmit)="onSubmit()"
-      #loginForm="ngForm"
+      [formGroup]="loginForm"
       class="w-full max-w-sm flex flex-col gap-2"
     >
       <app-input
@@ -20,10 +20,10 @@
         placeholder="exemplo@email.com"
         id="email"
         name="email"
-        [(ngModel)]="email"
+        formControlName="email"
+        [errorMessage]="formService.getFormErrorMessage(loginForm.get('email'))"
         [required]="true"
         email
-        #emailInput="ngModel"
       ></app-input>
 
       <app-input
@@ -32,10 +32,11 @@
         placeholder="••••••••"
         id="password"
         name="password"
-        [(ngModel)]="password"
-        [required]="true"
-        minlength="6"
-        #passwordInput="ngModel"
+        formControlName="password"
+        [errorMessage]="
+          formService.getFormErrorMessage(loginForm.get('password'))
+        "
+        type="password"
       ></app-input>
 
       <app-button
