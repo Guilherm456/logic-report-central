@@ -59,9 +59,10 @@
               <span class="text-lg font-semibold text-gray-800 leading-tight">
                 {{ template.description }}
               </span>
-              <p class="text-sm text-gray-500 truncate">
-                {{ template.content }}
-              </p>
+              <p
+                class="text-sm text-gray-500 truncate line-clamp-2 w-full"
+                [innerHTML]="template.content"
+              ></p>
             </div>
             <span
               class="text-xs font-medium px-2.5 py-0.5 rounded-full flex items-center whitespace-nowrap mt-1"
@@ -93,7 +94,16 @@
           class="border-t border-gray-200 bg-gray-50 px-4 py-2 flex justify-end items-center"
         >
           <app-button
-            (click)="editTemplate(template.id)"
+            (onClick)="onDeleteTemplate(template.id)"
+            className="text-sm bg-transparent hover:bg-red-100 !text-red-700"
+            id="delete-template-button-{{ template.id }}"
+          >
+            <app-icon icon="delete" />
+            Excluir
+          </app-button>
+
+          <app-button
+            (onClick)="editTemplate(template.id)"
             className="text-sm bg-transparent hover:bg-gray-100 !text-gray-700"
           >
             <app-icon icon="edit" />

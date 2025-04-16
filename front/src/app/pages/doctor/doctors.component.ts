@@ -9,9 +9,12 @@ import {
 } from '@angular/core'; // Adicionar ViewChild, ElementRef
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { deleteDoctor } from '@api_methods/doctors/delete';
 import { listDoctors } from '@api_methods/doctors/list';
+import { ConfirmDeleteModalComponent } from '@components/shared/confirmation-modal.component';
 import { UiModule } from '@components/ui.module';
 import { Doctor, PaginationResponse } from '@models';
+import { ModalService } from '@services/components/modal.service';
 import { ToastService } from '@services/components/toast.service';
 import { Observable, Subject, Subscription, from, of } from 'rxjs';
 import {
@@ -45,7 +48,8 @@ export class DoctorsComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private toastService: ToastService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -106,12 +110,7 @@ export class DoctorsComponent implements OnInit, OnDestroy {
   }
 
   goToPage(page: number): void {
-    if (
-      !this.loading &&
-      page >= 0 &&
-      (!this.pagination || page < this.totalPages)
-    ) {
-      this.loading = true;
+    if (page >= 0 && (!this.pagination || page < this.totalPages)) {
       this.currentPage = page;
       this.cdr.markForCheck();
       this.usersSubscription?.unsubscribe();
@@ -120,6 +119,45 @@ export class DoctorsComponent implements OnInit, OnDestroy {
         this.searchTerm
       ).subscribe();
     }
+  }
+
+  onConfirmDelete(doctorId: number): void {
+    this.modalService
+      .showModal({
+        component: ConfirmDeleteModalComponent,
+        data: {
+          message: `Tem certeza que deseja apagar o médico?`,
+          confirmButtonText: 'Apagar',
+          cancelButtonText: 'Cancelar',
+        },
+      })
+      .subscribe((result) => {
+        if (result) {
+          this.deleteDoctor(doctorId);
+        }
+      });
+  }
+
+  async deleteDoctor(doctorId: number) {
+    this.loading = true;
+
+    try {
+      await deleteDoctor({ id: doctorId });
+
+      this.toastService.showToast({
+        message: 'Médico apagado com sucesso.',
+        type: 'success',
+      });
+      this.goToPage(0);
+    } catch (e) {
+      this.toastService.showToast({
+        message:
+          (e as any)?.response?.data?.message ||
+          'Falha ao apagar médico. Tente novamente.',
+        type: 'error',
+      });
+    }
+    this.loading = false;
   }
 
   editUser(id: number): void {

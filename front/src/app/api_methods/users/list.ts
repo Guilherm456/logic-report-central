@@ -1,5 +1,5 @@
-import { Pagination, PaginationResponse, User } from '@models'; // Importa os tipos necessários
-import { api } from '@utils/api'; // Importa a instância base do Axios
+import { Pagination, PaginationResponse, User } from '@models';
+import { api } from '@utils/api';
 
 type FetchUsersParams = {
   search?: string;

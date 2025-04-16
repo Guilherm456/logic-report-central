@@ -5,9 +5,9 @@ type TMethod = {
   id: number;
 };
 
-export const getUser = async ({ id }: TMethod) => {
+export const deleteUser = async ({ id }: TMethod) => {
   try {
-    const response = await api.get<User>(`/users/${id}`);
+    const response = await api.delete<User>(`/users/${id}`);
     return response.data;
   } catch (error) {
     throw error;

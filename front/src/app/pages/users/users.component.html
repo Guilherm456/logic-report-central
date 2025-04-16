@@ -90,7 +90,16 @@
           class="border-t border-gray-200 bg-gray-50 px-4 py-2 flex justify-end items-center"
         >
           <app-button
-            (click)="editUser(user.id)"
+            (onClick)="confirmDeleteReport(user.id)"
+            [disabled]="!!user.doctor_linked"
+            className="text-sm bg-transparent hover:bg-red-100 !text-red-700"
+            id="delete-user-{{ user.id }}-button"
+          >
+            <app-icon icon="delete" />
+            Excluir
+          </app-button>
+          <app-button
+            (onClick)="editUser(user.id)"
             className="text-sm bg-transparent hover:bg-gray-100 !text-gray-700"
           >
             <app-icon icon="edit" />

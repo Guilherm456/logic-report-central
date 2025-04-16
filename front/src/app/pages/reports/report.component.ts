@@ -25,6 +25,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
+import { ReportDetailModalComponent } from './components/modal-view.component';
 
 @Component({
   selector: 'app-users',
@@ -107,6 +108,15 @@ export class ReportsComponent implements OnInit, OnDestroy {
     );
   }
 
+  viewReport(report: Report): void {
+    this.modalService.showModal({
+      component: ReportDetailModalComponent,
+      data: {
+        report,
+      },
+    });
+  }
+
   onSearchChange(): void {
     this.searchSubject.next(this.searchTerm);
   }
@@ -152,7 +162,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.goToPage(0);
     } catch (e) {
       this.toastService.showToast({
-        message: 'Falha ao apagar o laudo. Tente novamente.',
+        message: (e as any)?.response?.data?.message || 'Erro ao apagar laudo.',
         type: 'error',
       });
     }

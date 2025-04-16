@@ -5,7 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UiModule } from '@components/ui.module';
 import { ToastService } from '@services/components/toast.service';
-import { CookieService } from 'ngx-cookie-service';
+import Cookies from 'js-cookie';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -16,11 +17,7 @@ export class LoginComponent {
   password = '';
   loading = false;
 
-  constructor(
-    private router: Router,
-    private cookieService: CookieService,
-    private toastService: ToastService
-  ) {}
+  constructor(private router: Router, private toastService: ToastService) {}
 
   async onSubmit(): Promise<void> {
     this.loading = true;
@@ -40,7 +37,7 @@ export class LoginComponent {
       });
 
       if (token) {
-        this.cookieService.set('token', token);
+        Cookies.set('token', token);
 
         this.router.navigate(['/users']);
       }

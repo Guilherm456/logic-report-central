@@ -9,9 +9,12 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { deleteTemplate } from '@api_methods/templates/delete';
 import { listTemplates } from '@api_methods/templates/list'; // Importe a função para listar templates
+import { ConfirmDeleteModalComponent } from '@components/shared/confirmation-modal.component';
 import { UiModule } from '@components/ui.module';
 import { PaginationResponse, Template } from '@models'; // Importe a interface Template
+import { ModalService } from '@services/components/modal.service';
 import { ToastService } from '@services/components/toast.service';
 import { Observable, Subject, Subscription, from, of } from 'rxjs';
 import {
@@ -45,7 +48,8 @@ export class TemplatesComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private toastService: ToastService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -106,11 +110,7 @@ export class TemplatesComponent implements OnInit, OnDestroy {
   }
 
   goToPage(page: number): void {
-    if (
-      !this.loading &&
-      page >= 0 &&
-      (!this.pagination || page < this.totalPages)
-    ) {
+    if (page >= 0 && (!this.pagination || page < this.totalPages)) {
       this.loading = true;
       this.currentPage = page;
       this.cdr.markForCheck();
@@ -119,6 +119,43 @@ export class TemplatesComponent implements OnInit, OnDestroy {
         page,
         this.searchTerm
       ).subscribe();
+    }
+  }
+
+  confirmDeleteTemplate(templateId: number): void {
+    this.modalService
+      .showModal({
+        component: ConfirmDeleteModalComponent,
+        data: {
+          message: `Tem certeza que deseja apagar o template?`,
+          confirmButtonText: 'Apagar',
+          cancelButtonText: 'Cancelar',
+        },
+      })
+      .subscribe((result) => {
+        if (result) this.onDeleteTemplate(templateId);
+      });
+  }
+
+  async onDeleteTemplate(templateId: number) {
+    this.loading = true;
+
+    try {
+      await deleteTemplate({ id: templateId });
+
+      this.toastService.showToast({
+        message: 'Template apagado com sucesso.',
+        type: 'success',
+      });
+      this.goToPage(0);
+    } catch (error) {
+      this.toastService.showToast({
+        message:
+          (error as any)?.response?.data?.message || 'Erro ao apagar template.',
+        type: 'error',
+      });
+    } finally {
+      this.loading = false;
     }
   }
 

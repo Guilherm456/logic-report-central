@@ -6,24 +6,21 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { UserService } from '@services/user.service';
-import { CookieService } from 'ngx-cookie-service';
 import { map, Observable } from 'rxjs';
+
+import Cookies from 'js-cookie';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(
-    private router: Router,
-    private cookieService: CookieService,
-    private userService: UserService
-  ) {}
+  constructor(private router: Router, private userService: UserService) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean | Observable<boolean> {
-    const token = this.cookieService.get('token');
+    const token = Cookies.get('token');
     const isLoginPage = state.url === '/login';
 
     if (token && isLoginPage) {

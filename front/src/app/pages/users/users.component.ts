@@ -10,6 +10,8 @@ import {
 } from '@angular/core'; // Adicionar ViewChild, ElementRef
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { deleteUser } from '@api_methods/users/delete';
+import { ConfirmDeleteModalComponent } from '@components/shared/confirmation-modal.component';
 import { UiModule } from '@components/ui.module';
 import { PaginationResponse, User } from '@models';
 import { ModalService } from '@services/components/modal.service';
@@ -108,11 +110,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   goToPage(page: number): void {
-    if (
-      !this.loading &&
-      page >= 0 &&
-      (!this.pagination || page < this.totalPages)
-    ) {
+    if (page >= 0 && (!this.pagination || page < this.totalPages)) {
       this.loading = true;
       this.currentPage = page;
       this.cdr.markForCheck();
@@ -124,6 +122,45 @@ export class UsersComponent implements OnInit, OnDestroy {
     }
   }
 
+  confirmDeleteReport(userId: number): void {
+    this.modalService
+      .showModal({
+        component: ConfirmDeleteModalComponent,
+        data: {
+          message: `Tem certeza que deseja apagar o usuário?`,
+          confirmButtonText: 'Apagar',
+          cancelButtonText: 'Cancelar',
+        },
+      })
+      .subscribe((result) => {
+        if (result) this.onDeleteUser(userId);
+      });
+  }
+
+  async onDeleteUser(userId: number) {
+    this.loading = true;
+
+    try {
+      await deleteUser({ id: userId });
+
+      this.toastService.showToast({
+        message: 'Usuário apagado com sucesso.',
+        type: 'success',
+      });
+
+      this.goToPage(0);
+    } catch (error) {
+      this.toastService.showToast({
+        message:
+          (error as any)?.response?.data?.message ||
+          'Falha ao apagar usuário. Tente novamente.',
+        type: 'error',
+      });
+    } finally {
+      this.loading = false;
+    }
+  }
+
   editUser(userId: number): void {
     this.router.navigate(['/users/edit', userId]);
   }
@@ -131,8 +168,6 @@ export class UsersComponent implements OnInit, OnDestroy {
   createUser(): void {
     this.router.navigate(['/users/new']);
   }
-
-  onConfirmDelete(userId: number): void {}
 
   clearSearch(): void {
     this.searchTerm = '';
