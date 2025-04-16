@@ -6,7 +6,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { UserService } from '@services/user.service';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import Cookies from 'js-cookie';
 
@@ -34,17 +34,9 @@ export class AuthGuard implements CanActivate {
     }
 
     if (token && !isLoginPage) {
-      if (this.userService.getCurrentUser()) {
-        return true;
-      }
+      if (!this.userService.getCurrentUser()) this.userService.fetchUserData();
 
-      return this.userService.fetchUserData().pipe(
-        map((user) => {
-          if (user) return true;
-          this.router.navigate(['/login']);
-          return false;
-        })
-      );
+      return true;
     }
 
     return true;
